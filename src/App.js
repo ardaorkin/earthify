@@ -26,7 +26,8 @@ function App() {
     map.on('click', (e) => {
       if (!window.location.hash && !auth) {
         fetch("https://accounts.spotify.com/authorize?client_id=" + client_id + "&response_type=token" + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&scope=" + encodeURIComponent(scopes) + "&show_dialog=true", {
-          method: "GET"
+          method: "GET",
+          mode: "no-cors"
         })
           .then((res) => {
             window.location = res.url
@@ -46,7 +47,7 @@ function App() {
           .then(result => {
             result.features.map(feature => {
               if (feature.place_type[0] === "country") {
-                console.log(feature.place_name)
+                console.log(feature)
               }
             })
           })
@@ -71,4 +72,3 @@ function App() {
 }
 
 export default App;
-//https://accounts.spotify.com/authorize?scope=user-read-private+user-read-email&response_type=token&redirect_uri=https%3A%2F%2Fardaorkin.github.io%2Fcallback&client_id=9e71a4da3ee24d31ab4fd842607cce9e&show_dialog=true
