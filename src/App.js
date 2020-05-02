@@ -7,9 +7,6 @@ function App() {
   var baseURI = "https://api.spotify.com/"
   var client_id = '9e71a4da3ee24d31ab4fd842607cce9e';
   var redirect_uri = window.location.origin + window.location.pathname
-  if (window.location.pathname != "/callback") {
-    redirect_uri = window.location.origin + "/callback"
-  }
   var scopes = 'user-modify-playback-state';
 
 
