@@ -1,0 +1,2 @@
+curl -X PUT "https://api.spotify.com/v1/me/player/play" -H "Authorization: Bearer BQDK9bQgT8u2KnuBzUoaV8jJDjk3s1OnXvgpuMARIDTVMOzI13drHXrC6Lyw8I3mzW9R5qbgvtRfa54ZYjsLTQBumSMpvNNpEvbE5uzd7F8WOwpT6oCGnWkg5QoovBIHKcVLURnsnL6j4i4JvYqb6q-610ZdyE7IsWm98zq63FMfWTcFhiuf"
+
