@@ -6,7 +6,7 @@ function App() {
   const [auth, setAuth] = React.useState(isAuth)
   var baseURI = "https://api.spotify.com/"
   var client_id = '9e71a4da3ee24d31ab4fd842607cce9e';
-  var redirect_uri = window.location.origin + "/callback"
+  var redirect_uri = window.location.origin + window.location.pathname
   var scopes = 'user-read-private user-read-email';
 
 
