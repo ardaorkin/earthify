@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 
-
 function App() {
   const isAuth = window.localStorage.getItem('auth') || false
   const [auth, setAuth] = React.useState(isAuth)
@@ -9,7 +8,6 @@ function App() {
   var client_id = '9e71a4da3ee24d31ab4fd842607cce9e'; // Your client id
   var redirect_uri = window.location.origin + window.location.pathname; // Your redirect uri
   var scopes = 'user-read-private user-read-email';
-
 
   var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 
@@ -22,12 +20,10 @@ function App() {
       zoom: 3
     });
 
-
     map.on('click', (e) => {
       if (!window.location.hash && !auth) {
         fetch("https://accounts.spotify.com/authorize?client_id=" + client_id + "&response_type=token" + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&scope=" + encodeURIComponent(scopes) + "&show_dialog=true", {
           method: "GET",
-          mode: "no-cors"
         })
           .then((res) => {
             window.location = res.url
