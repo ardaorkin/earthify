@@ -7,7 +7,7 @@ function App() {
   const [auth, setAuth] = React.useState(isAuth)
   var baseURI = "https://api.spotify.com/"
   var client_id = '9e71a4da3ee24d31ab4fd842607cce9e'; // Your client id
-  var redirect_uri = window.location.origin + "/callback"; // Your redirect uri
+  var redirect_uri = window.location.origin + window.location.pathname; // Your redirect uri
   var scopes = 'user-read-private user-read-email';
 
 
@@ -71,3 +71,4 @@ function App() {
 }
 
 export default App;
+//https://accounts.spotify.com/authorize?scope=user-read-private+user-read-email&response_type=token&redirect_uri=https%3A%2F%2Fardaorkin.github.io%2Fcallback&client_id=9e71a4da3ee24d31ab4fd842607cce9e&show_dialog=true
