@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/earthify/static/css/main.d2a4fabb.chunk.css",
+    "main.js": "/earthify/static/js/main.20f49f65.chunk.js",
+    "main.js.map": "/earthify/static/js/main.20f49f65.chunk.js.map",
+    "runtime-main.js": "/earthify/static/js/runtime-main.b3e3a8ea.js",
+    "runtime-main.js.map": "/earthify/static/js/runtime-main.b3e3a8ea.js.map",
+    "static/js/2.e4da45ec.chunk.js": "/earthify/static/js/2.e4da45ec.chunk.js",
+    "static/js/2.e4da45ec.chunk.js.map": "/earthify/static/js/2.e4da45ec.chunk.js.map",
+    "index.html": "/earthify/index.html",
+    "precache-manifest.4237b96ec38a64c36eeee539dde4f01d.js": "/earthify/precache-manifest.4237b96ec38a64c36eeee539dde4f01d.js",
+    "service-worker.js": "/earthify/service-worker.js",
+    "static/css/main.d2a4fabb.chunk.css.map": "/earthify/static/css/main.d2a4fabb.chunk.css.map",
+    "static/js/2.e4da45ec.chunk.js.LICENSE.txt": "/earthify/static/js/2.e4da45ec.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b3e3a8ea.js",
+    "static/js/2.e4da45ec.chunk.js",
+    "static/css/main.d2a4fabb.chunk.css",
+    "static/js/main.20f49f65.chunk.js"
+  ]
+}
