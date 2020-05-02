@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "ec701c7b3e88c6fab0b43eeb5bbddc66",
+    "revision": "29e2dabddd381f8efd361e5a760454b4",
     "url": "/earthify/index.html"
   },
   {
-    "revision": "7c8b77a1c8312b7e375f",
+    "revision": "423c9ee360646820c93d",
     "url": "/earthify/static/css/main.d2a4fabb.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/earthify/static/js/2.ccebd085.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "7c8b77a1c8312b7e375f",
-    "url": "/earthify/static/js/main.33dde4b4.chunk.js"
+    "revision": "423c9ee360646820c93d",
+    "url": "/earthify/static/js/main.50e281bf.chunk.js"
   },
   {
     "revision": "545d5ac5909b7cb1537c",
