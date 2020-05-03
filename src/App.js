@@ -3,12 +3,15 @@ import './App.css';
 
 function App() {
   const [accessToken, setToken] = React.useState(localStorage.getItem('access_token'))
-  const isAuth = window.localStorage.getItem('auth') || false
-  const [auth, setAuth] = React.useState(isAuth)
+  const [auth, setAuth] = React.useState(window.localStorage.getItem('auth'))
+  const [refresh, setRefresh] = React.useState(localStorage.getItem('refresh_token'))
   const [code, setCode] = React.useState(localStorage.getItem("code"))
-  var baseURI = "https://api.spotify.com/"
   var client_id = '9e71a4da3ee24d31ab4fd842607cce9e';
-  var redirect_uri = window.location.origin + window.location.pathname
+  if(window.location.origin != "http://localhost:3000") {
+    var redirect_uri = window.location.origin + window.location.pathname
+  } else {
+    var redirect_uri = window.location.origin + "/callback"
+  }
   var scopes = 'user-modify-playback-state user-read-playback-state';
 
 
@@ -30,8 +33,14 @@ function App() {
         body: `grant_type=authorization_code&code=${window.location.search.split("=")[1]}&redirect_uri=${redirect_uri}`
       })
         .then(res => res.json())
-        .then(result => localStorage.setItem('access_token', result.access_token))
-        .then(result => localStorage.setItem('refresh_token', result.refresh_token))
+        .then(result => {
+          localStorage.setItem('access_token', result.access_token)
+          localStorage.setItem('refresh_token', result.refresh_token)
+        })
+        .then(() => {
+          setToken(localStorage.getItem('access_token'))
+          setRefresh(localStorage.getItem('refresh_token'))
+        })
         .then(() => window.location = window.location.origin + "/earthify")
         .catch(err => console.log("acees_token_respone: ", err))
     }
