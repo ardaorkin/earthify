@@ -52,7 +52,7 @@ function App(props) {
           setToken(localStorage.getItem('access_token'))
           setRefresh(localStorage.getItem('refresh_token'))
         })
-        .then(() => window.location = window.location.origin /*+ "/earthify"*/)
+        .then(() => window.location = window.location.origin + "/earthify")
         .catch(err => console.log("acees_token_respone: ", err))
     }
     afterAuthorize()
