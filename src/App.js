@@ -20,7 +20,7 @@ function App() {
       await window.localStorage.setItem('auth', true)
       var hash = window.location.hash.substr(1);
       localStorage.setItem('access_token', hash.split('=')[1].split('&')[0])
-      window.location = window.location.origin
+      window.location = window.location.origin + "/earthify"
     }
     afterAuthorize()
   }
