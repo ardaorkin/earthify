@@ -5,6 +5,7 @@ function App() {
   const [accessToken, setToken] = React.useState(localStorage.getItem('access_token'))
   const isAuth = window.localStorage.getItem('auth') || false
   const [auth, setAuth] = React.useState(isAuth)
+  const [code, setCode] = React.useState(localStorage.getItem("code"))
   var baseURI = "https://api.spotify.com/"
   var client_id = '9e71a4da3ee24d31ab4fd842607cce9e';
   var redirect_uri = window.location.origin + window.location.pathname
@@ -15,12 +16,24 @@ function App() {
 
   mapboxgl.accessToken = 'pk.eyJ1IjoiYXJkYW9ya2luIiwiYSI6ImNrOW9teW8wMzAyNnczbHJ0emVvNHE5dXcifQ.J_P9VwfH6UeYpgG5gw-JJQ';
 
-  if (window.location.hash.match(/access_token/g) !== null) {
+  if (window.location.search.match(/\?code/g) !== null) {
     async function afterAuthorize() {
       await window.localStorage.setItem('auth', true)
-      var hash = window.location.hash.substr(1);
-      localStorage.setItem('access_token', hash.split('=')[1].split('&')[0])
-      window.location = window.location.origin + "/earthify"
+      await localStorage.setItem("code", window.location.search.split("=")[1])
+      await fetch("https://accounts.spotify.com/api/token", {
+        method: "POST",
+        headers: {
+          "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6ZjJhZjc4MjVhOTA1NGNiNWE5MmMwZDZlMWEwNDAwNTY=",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Accept": "application/json"
+        },
+        body: `grant_type=authorization_code&code=${window.location.search.split("=")[1]}&redirect_uri=${redirect_uri}`
+      })
+        .then(res => res.json())
+        .then(result => localStorage.setItem('access_token', result.access_token))
+        .then(result => localStorage.setItem('refresh_token', result.refresh_token))
+        .then(() => window.location = window.location.origin /*+ "/earthify"*/)
+        .catch(err => console.log("acees_token_respone: ", err))
     }
     afterAuthorize()
   }
@@ -36,11 +49,12 @@ function App() {
 
 
     map.on('click', (e) => {
-      if (!window.location.hash && !auth) {
-        window.location = "https://accounts.spotify.com/authorize?client_id=" + client_id + "&response_type=token" + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&scope=" + encodeURIComponent(scopes) + "&show_dialog=true"
+      if (!window.location.search.match(/\?code/g) && !auth) {
+        window.location = "https://accounts.spotify.com/authorize?client_id=" + client_id + "&response_type=code" + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&scope=" + encodeURIComponent(scopes) + "&show_dialog=true"
       }
       else {
         console.log("acces_token: ", accessToken)
+
         fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${e.lngLat.lng.toString()},${e.lngLat.lat.toString()}.json?&access_token=${mapboxgl.accessToken}`, {
           method: "GET",
           headers: {
@@ -53,9 +67,19 @@ function App() {
           .then(result => {
             result.features.map(feature => {
               if (feature.place_type[0] === "country") {
-                console.log("feature: ", feature.text)
-                if (feature.text === "Turkey") {
-                  fetch("https://api.spotify.com/v1/me/player/devices", {
+                  fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(`${feature.text} top 50`)}&type=playlist`, {
+                    method: "GET",
+                    headers: {
+                      'Authorization': `Bearer ${accessToken}`,
+                    }
+                  })
+                    .then(res => res.json())
+                    .then(result => {
+                      console.log("search_results: ", result)
+                      result.playlists.items.map(item => {
+                        if(item.owner.display_name === "Top 50 Playlists") {
+                          console.log("top_fifth_playlists: ", item.uri)
+                          fetch("https://api.spotify.com/v1/me/player/devices", {
                     method: "GET",
                     headers: {
                       'Authorization': 'Bearer ' + accessToken
@@ -63,15 +87,15 @@ function App() {
                   })
                     .then(res => res.json())
                     .then(result => {
-                      console.log(result.devices[0].id)
-                      fetch("https://api.spotify.com/v1/me/player/play" + "?device_id=" + result.devices[0].id, {
+                      console.log(result.devices)
+                      fetch("https://api.spotify.com/v1/me/player/play?", {
                         method: "PUT",
                         headers: {
                           'Authorization': `Bearer ${accessToken}`,
                           "Content-Type": "application/json",
                           "Accept": "application/json",
                         },
-                        body: JSON.stringify({"uris": ["spotify:track:6Mer1LOfJDd7vUbeWXODrq"]})
+                        body: JSON.stringify({ context_uri: item.uri })
                       })
                         .then((response) => response.json())
                         .then(data => console.log("player_result: ", data))
@@ -79,7 +103,11 @@ function App() {
                     }
                     )
                     .catch(err => console.log("device_err: ", err))
-                }
+                        }
+                      })
+                    })
+                    .catch(err => console.log("search_err: ", err))
+                
               }
             })
           })
@@ -88,6 +116,7 @@ function App() {
           })
       }
     })
+
   }, [])
   return (
     <>
