@@ -2,18 +2,16 @@ import React from 'react';
 import './App.css';
 
 function App(props) {
-  const [earth, setEarth] = React.useState()
   const [accessToken, setToken] = React.useState(localStorage.getItem('access_token'))
   const [auth, setAuth] = React.useState(window.localStorage.getItem('auth'))
   const [refresh, setRefresh] = React.useState(localStorage.getItem('refresh_token'))
   const [code, setCode] = React.useState(localStorage.getItem("code"))
   const [light, setLight] = React.useState(true)
-  const [settings, setSettings] = React.useState(false)
 
   let mapStyle
-  if (light === true) {
+  if(light === true) {
     mapStyle = "light"
-  } else if (light === false) {
+  } else if(light === false) {
     mapStyle = "dark"
   }
 
@@ -65,7 +63,7 @@ function App(props) {
       style: "mapbox://styles/mapbox/light-v10",
       zoom: 3
     });
-    setEarth(map)
+
     map.on('click', (e) => {
       if (!window.location.search.match(/\?code/g) && !auth) {
         window.location = "https://accounts.spotify.com/authorize?client_id=" + client_id + "&response_type=code" + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&scope=" + encodeURIComponent(scopes) + "&show_dialog=true"
@@ -94,8 +92,8 @@ function App(props) {
                   .then(res => res.json())
                   .then(result => {
                     console.log("search_results: ", result)
-                    if (result.error) {
-                      if (result.error.message === "The access token expired") {
+                    if(result.error) {
+                      if(result.error.message === "The access token expired") {
                         fetch("https://accounts.spotify.com/api/token", {
                           method: "POST",
                           headers: {
@@ -105,42 +103,42 @@ function App(props) {
                           },
                           body: `grant_type=refresh_token&refresh_token=${refresh}`
                         })
-                          .then(res => res.json())
-                          .then(result => setToken(result.access_token))
+                        .then(res => res.json())
+                        .then(result => setToken(result.access_token))
                       } else {
-                        console.log("search_result_err: ", result)
+                        console.log("search_result_err: ", result.err)
                       }
                     } else {
-                      result.playlists.items.map(item => {
-                        if (item.owner.display_name === "Top 50 Playlists") {
-                          console.log("top_fifth_playlists: ", item.uri)
-                          fetch("https://api.spotify.com/v1/me/player/devices", {
-                            method: "GET",
-                            headers: {
-                              'Authorization': 'Bearer ' + accessToken
-                            }
-                          })
-                            .then(res => res.json())
-                            .then(result => {
-                              console.log(result.devices)
-                              fetch("https://api.spotify.com/v1/me/player/play?", {
-                                method: "PUT",
-                                headers: {
-                                  'Authorization': `Bearer ${accessToken}`,
-                                  "Content-Type": "application/json",
-                                  "Accept": "application/json",
-                                },
-                                body: JSON.stringify({ context_uri: item.uri })
-                              })
-                                .then((response) => response.json())
-                                .then(data => console.log("player_result: ", data))
-                                .catch(err => console.log("player_err: ", err))
-                            }
-                            )
-                            .catch(err => console.log("device_err: ", err))
-                        }
-                      })
-                    }
+                    result.playlists.items.map(item => {
+                      if (item.owner.display_name === "Top 50 Playlists") {
+                        console.log("top_fifth_playlists: ", item.uri)
+                        fetch("https://api.spotify.com/v1/me/player/devices", {
+                          method: "GET",
+                          headers: {
+                            'Authorization': 'Bearer ' + accessToken
+                          }
+                        })
+                          .then(res => res.json())
+                          .then(result => {
+                            console.log(result.devices)
+                            fetch("https://api.spotify.com/v1/me/player/play?", {
+                              method: "PUT",
+                              headers: {
+                                'Authorization': `Bearer ${accessToken}`,
+                                "Content-Type": "application/json",
+                                "Accept": "application/json",
+                              },
+                              body: JSON.stringify({ context_uri: item.uri })
+                            })
+                              .then((response) => response.json())
+                              .then(data => console.log("player_result: ", data))
+                              .catch(err => console.log("player_err: ", err))
+                          }
+                          )
+                          .catch(err => console.log("device_err: ", err))
+                      }
+                    })
+                  }
                   })
                   .catch(err => console.log("search_err: ", err))
 
@@ -158,37 +156,13 @@ function App(props) {
   var handleMapColor = (e) => {
     e.preventDefault()
     setLight(!light)
-    if (light === true) {
-      earth.setStyle("mapbox://styles/mapbox/light-v10")
-    } else if (light === false) {
-      earth.setStyle("mapbox://styles/mapbox/dark-v10")
-    }
-  }
-
-  var handleSettings = (e) => {
-    e.preventDefault()
-    setSettings(!settings)
+    console.log(light)
+    console.log(mapStyle)
   }
 
   return (
     <>
       <div id="map" className="App">
-      {/* {
-        settings === true ? <>
-          <div id="left-frame">
-            <div className="btn-grp">
-              <button className="colorize-button" onClick={light === false ? handleMapColor : null}>Dark</button>
-              <button className="colorize-button" onClick={light === true ? handleMapColor : null}>Light</button>
-            </div>
-            <div id="toggle-settings">
-              <i class="fas fa-sliders-h" style={{ marginTop: "2px" }} onClick={handleSettings}></i>
-            </div>
-          </div>
-        </> :
-          <div id="toggle-settings">
-            <i class="fas fa-sliders-h" style={{ marginTop: "2px" }} onClick={handleSettings}></i>
-          </div>
-      } */}
 
       </div>
     </>
