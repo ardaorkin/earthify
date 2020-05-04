@@ -101,75 +101,91 @@ function App(props) {
                       if (result.error && result.error.status === 401) {
                         refreshToken()
                       }
+
+                      var playlists = []
+                      var playlist = []
                       result.playlists.items.map(item => {
                         if (item.owner.display_name === "Top 50 Playlists") {
-                          console.log("top_fifth_playlists: ", item.uri)
-                          fetch("https://api.spotify.com/v1/me/player/devices", {
-                            method: "GET",
-                            headers: {
-                              'Authorization': 'Bearer ' + accessToken
-                            }
-                          })
-                            .then(res => res.json())
-                            .then(result => {
-                              console.log("all_devices_result: ", result)
-                              if (result.error && result.error.status === 401) {
-                                refreshToken()
-                              }
-                              if (result.devices.length === 0) {
-                                alert('Please run Spotify App in your device.')
-                              }
-                              var deviceArr = []
-                              result.devices.map(device => {
-                                if (device.is_active === true) {
-                                  deviceArr.push(device.id)
-                                }
-                                return deviceArr
-                              })
-                              console.log("active_devices_array: ", deviceArr)
-                              if (deviceArr.length > 0) {
-                                console.log("active device found!")
-                                fetch("https://api.spotify.com/v1/me/player/play?", {
-                                  method: "PUT",
-                                  headers: {
-                                    'Authorization': `Bearer ${accessToken}`,
-                                    "Content-Type": "application/json",
-                                    "Accept": "application/json",
-                                  },
-                                  body: JSON.stringify({ context_uri: item.uri })
-                                })
-                                  .then((response) => response.json())
-                                  .then(result => {
-                                    console.log("player_result: ", result)
-                                    if (result.error && result.error.status === 401) {
-                                      refreshToken()
-                                    }
-                                  })
-                                  .catch(err => console.log("player_err: ", err))
-                              } else if (deviceArr.length === 0) {
-                                console.log("there is no active device. first found device is activating...")
-                                fetch("https://api.spotify.com/v1/me/player", {
-                                  method: "PUT",
-                                  headers: {
-                                    'Authorization': 'Bearer ' + accessToken,
-                                    'Content-Type': 'application/json',
-                                    'Accept': 'application/json'
-                                  },
-                                  body: JSON.stringify({ device_ids: [deviceArr[0]], "play": true })
-                                })
-                                  .then(res => res.json())
-                                  .then(result => {
-                                    console.log("activate_device_result: ", result)
-                                    if (result.error && result.error.status === 401) {
-                                      refreshToken()
-                                    }
-                                  })
-                              }
-                            })
-                            .catch(err => console.log("device_err: ", err))
+                          playlists.push(item)
+                        } else if (item.owner.display_name === "spotifycharts") {
+                          playlists.push(item)
+                        } else if (item.name.match(/top\ 50/gi)) {
+                          playlists.push(item)
                         }
-                        return item
                       })
+
+                      if (playlists.length > 1) {
+                        playlist = playlists[0]
+                      } else {
+                        playlist = playlists
+                      }
+
+                      console.log("top_fifth_playlists: ", playlist)
+                      fetch("https://api.spotify.com/v1/me/player/devices", {
+                        method: "GET",
+                        headers: {
+                          'Authorization': 'Bearer ' + accessToken
+                        }
+                      })
+                        .then(res => res.json())
+                        .then(result => {
+                          console.log("all_devices_result: ", result)
+                          if (result.error && result.error.status === 401) {
+                            refreshToken()
+                          }
+                          if (result.devices.length === 0) {
+                            alert('Please run Spotify App in your device.')
+                          }
+                          var deviceArr = []
+                          result.devices.map(device => {
+                            if (device.is_active === true) {
+                              deviceArr.push(device.id)
+                            }
+                            return deviceArr
+                          })
+                          console.log("active_devices_array: ", deviceArr)
+                          if (deviceArr.length > 0) {
+                            console.log("active device found!")
+                            fetch("https://api.spotify.com/v1/me/player/play?", {
+                              method: "PUT",
+                              headers: {
+                                'Authorization': `Bearer ${accessToken}`,
+                                "Content-Type": "application/json",
+                                "Accept": "application/json",
+                              },
+                              body: JSON.stringify({ context_uri: playlist.uri })
+                            })
+                              .then((response) => response.json())
+                              .then(result => {
+                                console.log("player_result: ", result)
+                                if (result.error && result.error.status === 401) {
+                                  refreshToken()
+                                }
+                              })
+                              .catch(err => console.log("player_err: ", err))
+                          } else if (deviceArr.length === 0) {
+                            console.log("there is no active device. first found device is activating...")
+                            fetch("https://api.spotify.com/v1/me/player", {
+                              method: "PUT",
+                              headers: {
+                                'Authorization': 'Bearer ' + accessToken,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                              },
+                              body: JSON.stringify({ device_ids: [deviceArr[0]], "play": true })
+                            })
+                              .then(res => res.json())
+                              .then(result => {
+                                console.log("activate_device_result: ", result)
+                                if (result.error && result.error.status === 401) {
+                                  refreshToken()
+                                }
+                              })
+                          }
+                        })
+                        .catch(err => console.log("device_err: ", err))
+
+                      return playlist
                     })
                     .catch(err => console.log("search_err: ", err))
                 }
@@ -203,9 +219,6 @@ function App(props) {
         requestToSpotify()
       }
     })
-
-
-
 
   }, [])
 
