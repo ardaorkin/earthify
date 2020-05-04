@@ -1,6 +1,16 @@
+# Earthify
+
+
+ Top 50 song of conturies based on Spotify's data.
+
+ [Go live version](https://ardaorkin.github.io/earthify/).
+
+ _This project created using [Mapbox](https://www.mapbox.com/), [ReactJS](https://reactjs.org/) and [Spotify Web API](https://developer.spotify.com/documentation/web-api/)._
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
+
 
 In the project directory, you can run:
 
