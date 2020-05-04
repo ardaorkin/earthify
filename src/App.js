@@ -7,7 +7,7 @@ function App(props) {
   const [auth, setAuth] = React.useState(window.localStorage.getItem('auth'))
   const [refresh, setRefresh] = React.useState(localStorage.getItem('refresh_token'))
   const [light, setLight] = React.useState(true)
-  var finalResults = {}
+
 
   let mapStyle
   if (light === true) {
@@ -75,137 +75,135 @@ function App(props) {
         console.log("acces_token: ", accessToken)
 
 
-        fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${e.lngLat.lng.toString()},${e.lngLat.lat.toString()}.json?&access_token=${mapboxgl.accessToken}`, {
-          method: "GET",
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-          .then(res =>
-            res.json()
-          )
-          .then(result => {
-            result.features.map(feature => {
-              if (feature.place_type[0] === "country") {
-                fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(`${feature.text} top 50`)}&type=playlist`, {
-                  method: "GET",
-                  headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                  }
-                })
-                  .then(res => res.json())
-                  .then(result => {
-                    console.log("search_results: ", result)
-                    finalResults["search_results"] = result
-                    result.playlists.items.map(item => {
-                      if (item.owner.display_name === "Top 50 Playlists") {
-                        console.log("top_fifth_playlists: ", item.uri)
-                        fetch("https://api.spotify.com/v1/me/player/devices", {
-                          method: "GET",
-                          headers: {
-                            'Authorization': 'Bearer ' + accessToken
-                          }
-                        })
-                          .then(res => res.json())
-                          .then(result => {
-                            console.log("all_devices_result: ", result)
-                            finalResults["devices_results"] = result
-                            var deviceArr = []
-                            result.devices.map(device => {
-                              if (device.is_active === true) {
-                                deviceArr.push(device.id)
-                              }
-                              return deviceArr
-                            })
-                            console.log("active_devices_array: ", deviceArr)
-                            if (deviceArr.length > 0) {
-                              console.log("active device found!")
-                              fetch("https://api.spotify.com/v1/me/player/play?", {
-                                method: "PUT",
-                                headers: {
-                                  'Authorization': `Bearer ${accessToken}`,
-                                  "Content-Type": "application/json",
-                                  "Accept": "application/json",
-                                },
-                                body: JSON.stringify({ context_uri: item.uri })
-                              })
-                                .then((response) => response.json())
-                                .then(result => {
-                                  console.log("player_result: ", result)
-                                  finalResults["playes_result"] = result
-                                })
-                                .catch(err => console.log("player_err: ", err))
-                            } else if (deviceArr.length === 0) {
-                              console.log("there is no active device. first found device is activating...")
-                              fetch("https://api.spotify.com/v1/me/player", {
-                                method: "PUT",
-                                headers: {
-                                  'Authorization': 'Bearer ' + accessToken,
-                                  'Content-Type': 'application/json',
-                                  'Accept': 'application/json'
-                                },
-                                body: JSON.stringify({ device_ids: [deviceArr[0]], "play": true })
-                              })
-                                .then(res => res.json())
-                                .then(result => {
-                                  console.log("activate_device_result: ", result)
-                                  finalResults["activate_device_result"] = result
-                                })
+        function requestToSpotify() {
+
+          fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${e.lngLat.lng.toString()},${e.lngLat.lat.toString()}.json?&access_token=${mapboxgl.accessToken}`, {
+            method: "GET",
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+            .then(res =>
+              res.json()
+            )
+            .then(result => {
+              result.features.map(feature => {
+                if (feature.place_type[0] === "country") {
+                  fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(`${feature.text} top 50`)}&type=playlist`, {
+                    method: "GET",
+                    headers: {
+                      'Authorization': `Bearer ${accessToken}`,
+                    }
+                  })
+                    .then(res => res.json())
+                    .then(result => {
+                      console.log("search_results: ", result)
+                      if (result.error && result.error.status === 401) {
+                        refreshToken()
+                      }
+                      result.playlists.items.map(item => {
+                        if (item.owner.display_name === "Top 50 Playlists") {
+                          console.log("top_fifth_playlists: ", item.uri)
+                          fetch("https://api.spotify.com/v1/me/player/devices", {
+                            method: "GET",
+                            headers: {
+                              'Authorization': 'Bearer ' + accessToken
                             }
                           })
-                          .catch(err => console.log("device_err: ", err))
-                      }
-                      return item
+                            .then(res => res.json())
+                            .then(result => {
+                              console.log("all_devices_result: ", result)
+                              if (result.error && result.error.status === 401) {
+                                refreshToken()
+                              }
+                              if (result.devices.length === 0) {
+                                alert('Please run Spotify App in your device.')
+                              }
+                              var deviceArr = []
+                              result.devices.map(device => {
+                                if (device.is_active === true) {
+                                  deviceArr.push(device.id)
+                                }
+                                return deviceArr
+                              })
+                              console.log("active_devices_array: ", deviceArr)
+                              if (deviceArr.length > 0) {
+                                console.log("active device found!")
+                                fetch("https://api.spotify.com/v1/me/player/play?", {
+                                  method: "PUT",
+                                  headers: {
+                                    'Authorization': `Bearer ${accessToken}`,
+                                    "Content-Type": "application/json",
+                                    "Accept": "application/json",
+                                  },
+                                  body: JSON.stringify({ context_uri: item.uri })
+                                })
+                                  .then((response) => response.json())
+                                  .then(result => {
+                                    console.log("player_result: ", result)
+                                    if (result.error && result.error.status === 401) {
+                                      refreshToken()
+                                    }
+                                  })
+                                  .catch(err => console.log("player_err: ", err))
+                              } else if (deviceArr.length === 0) {
+                                console.log("there is no active device. first found device is activating...")
+                                fetch("https://api.spotify.com/v1/me/player", {
+                                  method: "PUT",
+                                  headers: {
+                                    'Authorization': 'Bearer ' + accessToken,
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json'
+                                  },
+                                  body: JSON.stringify({ device_ids: [deviceArr[0]], "play": true })
+                                })
+                                  .then(res => res.json())
+                                  .then(result => {
+                                    console.log("activate_device_result: ", result)
+                                    if (result.error && result.error.status === 401) {
+                                      refreshToken()
+                                    }
+                                  })
+                              }
+                            })
+                            .catch(err => console.log("device_err: ", err))
+                        }
+                        return item
+                      })
                     })
-                  })
-                  .catch(err => console.log("search_err: ", err))
-              }
-              return feature
+                    .catch(err => console.log("search_err: ", err))
+                }
+                return feature
+              })
             })
+            .catch((err) => {
+              console.log("map_err: ", err)
+            })
+        }
+        function refreshToken() {
+          console.log("access token is refreshing...")
+          fetch("https://accounts.spotify.com/api/token", {
+            method: "POST",
+            headers: {
+              "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6ZjJhZjc4MjVhOTA1NGNiNWE5MmMwZDZlMWEwNDAwNTY=",
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Accept": "application/json"
+            },
+            body: `grant_type=refresh_token&refresh_token=${refresh}`
           })
-          .catch((err) => {
-            console.log("map_err: ", err)
-          })
+            .then(res => res.json())
+            .then(result => {
+              console.log("updating access token...")
+              localStorage.setItem('access_token', result.access_token)
+            })
+            .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
+            .then(() => requestToSpotify())
+        }
+
+        requestToSpotify()
       }
     })
 
-    const controlResults = setInterval(() => {
-      Object.values(finalResults).map(result => {
-        console.log("final_results: ", result)
-        if (result.error) {
-          if (result.error.status === 401) {
-            console.log("acces token is invalid at level: ", result)
-            fetch("https://accounts.spotify.com/api/token", {
-              method: "POST",
-              headers: {
-                "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6ZjJhZjc4MjVhOTA1NGNiNWE5MmMwZDZlMWEwNDAwNTY=",
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Accept": "application/json"
-              },
-              body: `grant_type=refresh_token&refresh_token=${refresh}`
-            })
-              .then(res => res.json())
-              .then(result => {
-                console.log("updating access token...")
-                localStorage.setItem('access_token', result.access_token)
-              })
-              .then(() => finalResults = {})
-          } else if (result.error.status === 404) {
-
-            if (window.confirm("Plase run Spotify App in your device")) {
-              finalResults = {}
-            }
-
-          }
-        } else {
-          finalResults = {}
-        }
-      })
-    }, 500);
-    return () => {
-      clearInterval(controlResults)
-      finalResults = {}
-    }
 
 
 
