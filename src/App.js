@@ -2,7 +2,8 @@ import React from 'react';
 import './App.css';
 
 function App(props) {
-  const [accessToken, setToken] = React.useState(localStorage.getItem('access_token'))
+  const access_token = localStorage.getItem('access_token') || ""
+  const [accessToken, setToken] = React.useState(access_token)
   const [auth, setAuth] = React.useState(window.localStorage.getItem('auth'))
   const [refresh, setRefresh] = React.useState(localStorage.getItem('refresh_token'))
   const [light, setLight] = React.useState(true)
@@ -107,7 +108,7 @@ function App(props) {
                         })
                           .then(res => res.json())
                           .then(result => {
-                            console.log("devices_result: ", result)
+                            console.log("all_devices_result: ", result)
                             finalResults["devices_results"] = result
                             var deviceArr = []
                             result.devices.map(device => {
@@ -116,7 +117,7 @@ function App(props) {
                               }
                               return deviceArr
                             })
-                            console.log("devices_array: ", deviceArr)
+                            console.log("active_devices_array: ", deviceArr)
                             if (deviceArr.length > 0) {
                               console.log("active device found!")
                               fetch("https://api.spotify.com/v1/me/player/play?", {
@@ -184,7 +185,10 @@ function App(props) {
               body: `grant_type=refresh_token&refresh_token=${refresh}`
             })
               .then(res => res.json())
-              .then(result => localStorage.setItem('access_token', result.access_token))
+              .then(result => {
+                console.log("updating access token...")
+                localStorage.setItem('access_token', result.access_token)
+              })
               .then(() => finalResults = {})
           } else if (result.error.status === 404) {
 
