@@ -5,21 +5,22 @@ function App(props) {
   const [accessToken, setToken] = React.useState(localStorage.getItem('access_token'))
   const [auth, setAuth] = React.useState(window.localStorage.getItem('auth'))
   const [refresh, setRefresh] = React.useState(localStorage.getItem('refresh_token'))
-  const [code, setCode] = React.useState(localStorage.getItem("code"))
   const [light, setLight] = React.useState(true)
+  var finalResults = {}
 
   let mapStyle
-  if(light === true) {
+  if (light === true) {
     mapStyle = "light"
-  } else if(light === false) {
+  } else if (light === false) {
     mapStyle = "dark"
   }
 
   var client_id = '9e71a4da3ee24d31ab4fd842607cce9e';
-  if (window.location.origin != "http://localhost:3000") {
-    var redirect_uri = window.location.origin + window.location.pathname
+  var redirect_uri
+  if (window.location.origin !== "http://localhost:3000") {
+    redirect_uri = window.location.origin + window.location.pathname
   } else {
-    var redirect_uri = window.location.origin + "/callback"
+    redirect_uri = window.location.origin + "/callback"
   }
   var scopes = 'user-modify-playback-state user-read-playback-state';
 
@@ -31,7 +32,6 @@ function App(props) {
   if (window.location.search.match(/\?code/g) !== null) {
     async function afterAuthorize() {
       await window.localStorage.setItem('auth', true)
-      await localStorage.setItem("code", window.location.search.split("=")[1])
       await fetch("https://accounts.spotify.com/api/token", {
         method: "POST",
         headers: {
@@ -58,6 +58,8 @@ function App(props) {
 
 
   React.useEffect(() => {
+
+
     var map = new mapboxgl.Map({
       container: 'root',
       style: "mapbox://styles/mapbox/light-v10",
@@ -66,10 +68,11 @@ function App(props) {
 
     map.on('click', (e) => {
       if (!window.location.search.match(/\?code/g) && !auth) {
-        window.location = "https://accounts.spotify.com/authorize?client_id=" + client_id + "&response_type=code" + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&scope=" + encodeURIComponent(scopes) + "&show_dialog=true"
+        window.location = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scopes)}&show_dialog=true`
       }
       else {
         console.log("acces_token: ", accessToken)
+
 
         fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${e.lngLat.lng.toString()},${e.lngLat.lat.toString()}.json?&access_token=${mapboxgl.accessToken}`, {
           method: "GET",
@@ -92,23 +95,7 @@ function App(props) {
                   .then(res => res.json())
                   .then(result => {
                     console.log("search_results: ", result)
-                    if(result.error) {
-                      if(result.error.message === "The access token expired") {
-                        fetch("https://accounts.spotify.com/api/token", {
-                          method: "POST",
-                          headers: {
-                            "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6ZjJhZjc4MjVhOTA1NGNiNWE5MmMwZDZlMWEwNDAwNTY=",
-                            "Content-Type": "application/x-www-form-urlencoded",
-                            "Accept": "application/json"
-                          },
-                          body: `grant_type=refresh_token&refresh_token=${refresh}`
-                        })
-                        .then(res => res.json())
-                        .then(result => setToken(result.access_token))
-                      } else {
-                        console.log("search_result_err: ", result.err)
-                      }
-                    } else {
+                    finalResults["search_results"] = result
                     result.playlists.items.map(item => {
                       if (item.owner.display_name === "Top 50 Playlists") {
                         console.log("top_fifth_playlists: ", item.uri)
@@ -120,29 +107,59 @@ function App(props) {
                         })
                           .then(res => res.json())
                           .then(result => {
-                            console.log(result.devices)
-                            fetch("https://api.spotify.com/v1/me/player/play?", {
-                              method: "PUT",
-                              headers: {
-                                'Authorization': `Bearer ${accessToken}`,
-                                "Content-Type": "application/json",
-                                "Accept": "application/json",
-                              },
-                              body: JSON.stringify({ context_uri: item.uri })
+                            console.log("devices_result: ", result)
+                            finalResults["devices_results"] = result
+                            var deviceArr = []
+                            result.devices.map(device => {
+                              if (device.is_active === true) {
+                                deviceArr.push(device.id)
+                              }
+                              return deviceArr
                             })
-                              .then((response) => response.json())
-                              .then(data => console.log("player_result: ", data))
-                              .catch(err => console.log("player_err: ", err))
-                          }
-                          )
+                            console.log("devices_array: ", deviceArr)
+                            if (deviceArr.length > 0) {
+                              console.log("active device found!")
+                              fetch("https://api.spotify.com/v1/me/player/play?", {
+                                method: "PUT",
+                                headers: {
+                                  'Authorization': `Bearer ${accessToken}`,
+                                  "Content-Type": "application/json",
+                                  "Accept": "application/json",
+                                },
+                                body: JSON.stringify({ context_uri: item.uri })
+                              })
+                                .then((response) => response.json())
+                                .then(result => {
+                                  console.log("player_result: ", result)
+                                  finalResults["playes_result"] = result
+                                })
+                                .catch(err => console.log("player_err: ", err))
+                            } else if (deviceArr.length === 0) {
+                              console.log("there is no active device. first found device is activating...")
+                              fetch("https://api.spotify.com/v1/me/player", {
+                                method: "PUT",
+                                headers: {
+                                  'Authorization': 'Bearer ' + accessToken,
+                                  'Content-Type': 'application/json',
+                                  'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({ device_ids: [deviceArr[0]], "play": true })
+                              })
+                                .then(res => res.json())
+                                .then(result => {
+                                  console.log("activate_device_result: ", result)
+                                  finalResults["activate_device_result"] = result
+                                })
+                            }
+                          })
                           .catch(err => console.log("device_err: ", err))
                       }
+                      return item
                     })
-                  }
                   })
                   .catch(err => console.log("search_err: ", err))
-
               }
+              return feature
             })
           })
           .catch((err) => {
@@ -151,7 +168,46 @@ function App(props) {
       }
     })
 
+    const controlResults = setInterval(() => {
+      Object.values(finalResults).map(result => {
+        console.log("final_results: ", result)
+        if (result.error) {
+          if (result.error.status === 401) {
+            console.log("acces token is invalid at level: ", result)
+            fetch("https://accounts.spotify.com/api/token", {
+              method: "POST",
+              headers: {
+                "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6ZjJhZjc4MjVhOTA1NGNiNWE5MmMwZDZlMWEwNDAwNTY=",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json"
+              },
+              body: `grant_type=refresh_token&refresh_token=${refresh}`
+            })
+              .then(res => res.json())
+              .then(result => localStorage.setItem('access_token', result.access_token))
+              .then(() => finalResults = {})
+          } else if (result.error.status === 404) {
+
+            if (window.confirm("Plase run Spotify App in your device")) {
+              finalResults = {}
+            }
+
+          }
+        } else {
+          finalResults = {}
+        }
+      })
+    }, 500);
+    return () => {
+      clearInterval(controlResults)
+      finalResults = {}
+    }
+
+
+
   }, [])
+
+
 
   var handleMapColor = (e) => {
     e.preventDefault()
