@@ -68,6 +68,7 @@ function App(props) {
     });
 
     map.on('click', (e) => {
+
       if (!window.location.search.match(/\?code/g) && !auth) {
         window.location = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scopes)}&show_dialog=true`
       }
@@ -88,7 +89,10 @@ function App(props) {
             )
             .then(result => {
               result.features.map(feature => {
+
                 if (feature.place_type[0] === "country") {
+                  console.log("map_results: ", feature)
+
                   fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(`${feature.text} top 50`)}&type=playlist`, {
                     method: "GET",
                     headers: {
@@ -97,9 +101,10 @@ function App(props) {
                   })
                     .then(res => res.json())
                     .then(result => {
-                      console.log("search_results: ", result)
                       if (result.error && result.error.status === 401) {
                         refreshToken()
+                      } else if (result.error == undefined) {
+                        console.log("search_results: ", result)
                       }
 
                       var playlists = []
@@ -129,9 +134,10 @@ function App(props) {
                       })
                         .then(res => res.json())
                         .then(result => {
-                          console.log("all_devices_result: ", result)
                           if (result.error && result.error.status === 401) {
                             refreshToken()
+                          } else if (result.error == undefined) {
+                            console.log("all_devices_result: ", result)
                           }
                           if (result.devices.length === 0) {
                             alert('Please run Spotify App in your device.')
@@ -157,17 +163,18 @@ function App(props) {
                             })
                               .then((response) => response.json())
                               .then(result => {
-                                console.log("player_result: ", result)
                                 if (result.error && result.error.status === 401) {
                                   refreshToken()
+                                } else if (result.error == undefined) {
+                                  console.log("player_result: ", result)
                                 }
                               })
                               .catch(err => console.log("player_err: ", err))
-                          } else if (deviceArr.length === 0) {
-                            console.log("there is no active device. first found device is activating...")
-                            fetch("https://api.spotify.com/v1/me/player", {
-                              method: "PUT",
-                              headers: {
+                            } else if (deviceArr.length === 0) {
+                              console.log("there is no active device. first found device is activating...")
+                              fetch("https://api.spotify.com/v1/me/player", {
+                                method: "PUT",
+                                headers: {
                                 'Authorization': 'Bearer ' + accessToken,
                                 'Content-Type': 'application/json',
                                 'Accept': 'application/json'
@@ -176,14 +183,15 @@ function App(props) {
                             })
                               .then(res => res.json())
                               .then(result => {
-                                console.log("activate_device_result: ", result)
                                 if (result.error && result.error.status === 401) {
                                   refreshToken()
+                                } else if (result.error == undefined) {
+                                  console.log("activate_device_result: ", result)
                                 }
                               })
-                          }
-                        })
-                        .catch(err => console.log("device_err: ", err))
+                            }
+                          })
+                          .catch(err => console.log("device_err: ", err))
 
                       return playlist
                     })
