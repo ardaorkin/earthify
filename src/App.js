@@ -67,6 +67,7 @@ function App(props) {
       zoom: 3
     });
 
+
     map.on('click', (e) => {
 
       if (!window.location.search.match(/\?code/g) && !auth) {
@@ -170,11 +171,11 @@ function App(props) {
                                 }
                               })
                               .catch(err => console.log("player_err: ", err))
-                            } else if (deviceArr.length === 0) {
-                              console.log("there is no active device. first found device is activating...")
-                              fetch("https://api.spotify.com/v1/me/player", {
-                                method: "PUT",
-                                headers: {
+                          } else if (deviceArr.length === 0) {
+                            console.log("there is no active device. first found device is activating...")
+                            fetch("https://api.spotify.com/v1/me/player", {
+                              method: "PUT",
+                              headers: {
                                 'Authorization': 'Bearer ' + accessToken,
                                 'Content-Type': 'application/json',
                                 'Accept': 'application/json'
@@ -189,9 +190,9 @@ function App(props) {
                                   console.log("activate_device_result: ", result)
                                 }
                               })
-                            }
-                          })
-                          .catch(err => console.log("device_err: ", err))
+                          }
+                        })
+                        .catch(err => console.log("device_err: ", err))
 
                       return playlist
                     })
@@ -205,23 +206,27 @@ function App(props) {
             })
         }
         function refreshToken() {
-          console.log("access token is refreshing...")
-          fetch("https://accounts.spotify.com/api/token", {
-            method: "POST",
-            headers: {
-              "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6ZjJhZjc4MjVhOTA1NGNiNWE5MmMwZDZlMWEwNDAwNTY=",
-              "Content-Type": "application/x-www-form-urlencoded",
-              "Accept": "application/json"
-            },
-            body: `grant_type=refresh_token&refresh_token=${refresh}`
-          })
-            .then(res => res.json())
-            .then(result => {
-              console.log("updating access token...")
-              localStorage.setItem('access_token', result.access_token)
+          if (window.confirm("Your access token has expired.\nWolud you refresh it?")) {
+            console.log("access token is refreshing...")
+
+            fetch("https://accounts.spotify.com/api/token", {
+              method: "POST",
+              headers: {
+                "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6ZjJhZjc4MjVhOTA1NGNiNWE5MmMwZDZlMWEwNDAwNTY=",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json"
+              },
+              body: `grant_type=refresh_token&refresh_token=${refresh}`
             })
-            .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
-            .then(() => requestToSpotify())
+              .then(res => res.json())
+              .then(result => {
+                console.log("updating access token...")
+                localStorage.setItem('access_token', result.access_token)
+              })
+              .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
+              .then(() => requestToSpotify())
+              .then(() => window.location.reload())
+          }
         }
 
         requestToSpotify()
