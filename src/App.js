@@ -206,28 +206,27 @@ function App(props) {
             })
         }
         function refreshToken() {
-          if (window.confirm("Your access token has expired.\nWolud you refresh it?")) {
-            console.log("access token is refreshing...")
+          console.log("access token is refreshing...")
 
-            fetch("https://accounts.spotify.com/api/token", {
-              method: "POST",
-              headers: {
-                "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6ZjJhZjc4MjVhOTA1NGNiNWE5MmMwZDZlMWEwNDAwNTY=",
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Accept": "application/json"
-              },
-              body: `grant_type=refresh_token&refresh_token=${refresh}`
+          fetch("https://accounts.spotify.com/api/token", {
+            method: "POST",
+            headers: {
+              "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6ZjJhZjc4MjVhOTA1NGNiNWE5MmMwZDZlMWEwNDAwNTY=",
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Accept": "application/json"
+            },
+            body: `grant_type=refresh_token&refresh_token=${refresh}`
+          })
+            .then(res => res.json())
+            .then(result => {
+              console.log("updating access token...")
+              localStorage.setItem('access_token', result.access_token)
             })
-              .then(res => res.json())
-              .then(result => {
-                console.log("updating access token...")
-                localStorage.setItem('access_token', result.access_token)
-              })
-              .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
-              .then(() => requestToSpotify())
-              .then(() => window.location.reload())
-          }
+            .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
+            .then(() => requestToSpotify())
+            .then(() => window.location.reload())
         }
+
 
         requestToSpotify()
       }
