@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/earthify/static/css/main.191e8718.chunk.css",
-    "main.js": "/earthify/static/js/main.deebfb53.chunk.js",
-    "main.js.map": "/earthify/static/js/main.deebfb53.chunk.js.map",
+    "main.js": "/earthify/static/js/main.91eeef5c.chunk.js",
+    "main.js.map": "/earthify/static/js/main.91eeef5c.chunk.js.map",
     "runtime-main.js": "/earthify/static/js/runtime-main.b3e3a8ea.js",
     "runtime-main.js.map": "/earthify/static/js/runtime-main.b3e3a8ea.js.map",
-    "static/js/2.3004b986.chunk.js": "/earthify/static/js/2.3004b986.chunk.js",
-    "static/js/2.3004b986.chunk.js.map": "/earthify/static/js/2.3004b986.chunk.js.map",
+    "static/js/2.b395d79f.chunk.js": "/earthify/static/js/2.b395d79f.chunk.js",
+    "static/js/2.b395d79f.chunk.js.map": "/earthify/static/js/2.b395d79f.chunk.js.map",
     "index.html": "/earthify/index.html",
-    "precache-manifest.dffc099173f71fe2e048b59ac706330b.js": "/earthify/precache-manifest.dffc099173f71fe2e048b59ac706330b.js",
+    "precache-manifest.183703bbd9e14b6f44ed73e11b39a6de.js": "/earthify/precache-manifest.183703bbd9e14b6f44ed73e11b39a6de.js",
     "service-worker.js": "/earthify/service-worker.js",
     "static/css/main.191e8718.chunk.css.map": "/earthify/static/css/main.191e8718.chunk.css.map",
-    "static/js/2.3004b986.chunk.js.LICENSE.txt": "/earthify/static/js/2.3004b986.chunk.js.LICENSE.txt"
+    "static/js/2.b395d79f.chunk.js.LICENSE.txt": "/earthify/static/js/2.b395d79f.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.b3e3a8ea.js",
-    "static/js/2.3004b986.chunk.js",
+    "static/js/2.b395d79f.chunk.js",
     "static/css/main.191e8718.chunk.css",
-    "static/js/main.deebfb53.chunk.js"
+    "static/js/main.91eeef5c.chunk.js"
   ]
 }
