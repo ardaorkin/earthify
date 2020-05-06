@@ -6,24 +6,17 @@ function App(props) {
   const [accessToken, setToken] = React.useState(access_token)
   const [auth, setAuth] = React.useState(window.localStorage.getItem('auth'))
   const [refresh, setRefresh] = React.useState(localStorage.getItem('refresh_token'))
-  const [light, setLight] = React.useState(true)
 
 
-  let mapStyle
-  if (light === true) {
-    mapStyle = "light"
-  } else if (light === false) {
-    mapStyle = "dark"
-  }
-
-  var client_id = '9e71a4da3ee24d31ab4fd842607cce9e';
+  var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
+  var client_secret = "907e432cd3d74554b29582eb58756277";
   var redirect_uri
   if (window.location.origin !== "http://localhost:3000") {
     redirect_uri = window.location.origin + window.location.pathname
   } else {
     redirect_uri = window.location.origin + "/callback"
   }
-  var scopes = 'user-modify-playback-state user-read-playback-state';
+  var scopes = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
 
 
   var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
@@ -31,30 +24,28 @@ function App(props) {
   mapboxgl.accessToken = 'pk.eyJ1IjoiYXJkYW9ya2luIiwiYSI6ImNrOW9teW8wMzAyNnczbHJ0emVvNHE5dXcifQ.J_P9VwfH6UeYpgG5gw-JJQ';
 
   if (window.location.search.match(/\?code/g) !== null) {
-    async function afterAuthorize() {
-      await window.localStorage.setItem('auth', true)
-      await fetch("https://accounts.spotify.com/api/token", {
-        method: "POST",
-        headers: {
-          "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6ZjJhZjc4MjVhOTA1NGNiNWE5MmMwZDZlMWEwNDAwNTY=",
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Accept": "application/json"
-        },
-        body: `grant_type=authorization_code&code=${window.location.search.split("=")[1]}&redirect_uri=${redirect_uri}`
+
+    fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/json"
+      },
+      body: `grant_type=authorization_code&code=${window.location.search.split("=")[1]}&redirect_uri=${redirect_uri}&client_id=${client_id}&client_secret=${client_secret}`
+    })
+      .then(res => res.json())
+      .then(result => {
+        localStorage.setItem('create_access_token_result', JSON.stringify(result))
+        localStorage.setItem('access_token', result.access_token)
+        localStorage.setItem('refresh_token', result.refresh_token)
       })
-        .then(res => res.json())
-        .then(result => {
-          localStorage.setItem('access_token', result.access_token)
-          localStorage.setItem('refresh_token', result.refresh_token)
-        })
-        .then(() => {
-          setToken(localStorage.getItem('access_token'))
-          setRefresh(localStorage.getItem('refresh_token'))
-        })
-        .then(() => window.location = window.location.origin + "/earthify")
-        .catch(err => console.log("acees_token_respone: ", err))
-    }
-    afterAuthorize()
+      .then(() => {
+        setToken(localStorage.getItem('access_token'))
+        setRefresh(localStorage.getItem('refresh_token'))
+      })
+      .then(() => window.location = window.location.origin + "/earthify")
+      .then(() => window.localStorage.setItem('auth', true))
+      .catch(err => console.log("acees_token_respone: ", err))
   }
 
 
@@ -104,9 +95,8 @@ function App(props) {
                     .then(result => {
                       if (result.error && result.error.status === 401) {
                         refreshToken()
-                      } else if (result.error == undefined) {
-                        console.log("search_results: ", result)
                       }
+                      console.log("search_results: ", result)
 
                       var playlists = []
                       var playlist = []
@@ -126,9 +116,10 @@ function App(props) {
                         playlist = playlists
                       }
 
-                      console.log("top_fifth_playlists: ", playlist)
-                      fetch("https://api.spotify.com/v1/me/player/devices", {
-                        method: "GET",
+                      if(Object.keys(playlist).length > 0) {
+                        console.log("top_fifth_playlists: ", playlist)
+                        fetch("https://api.spotify.com/v1/me/player/devices", {
+                          method: "GET",
                         headers: {
                           'Authorization': 'Bearer ' + accessToken
                         }
@@ -137,9 +128,8 @@ function App(props) {
                         .then(result => {
                           if (result.error && result.error.status === 401) {
                             refreshToken()
-                          } else if (result.error == undefined) {
-                            console.log("all_devices_result: ", result)
                           }
+                          console.log("all_devices_result: ", result)
                           if (result.devices.length === 0) {
                             alert('Please run Spotify App in your device.')
                           }
@@ -166,12 +156,11 @@ function App(props) {
                               .then(result => {
                                 if (result.error && result.error.status === 401) {
                                   refreshToken()
-                                } else if (result.error == undefined) {
-                                  console.log("player_result: ", result)
                                 }
+                                console.log("player_result: ", result)
                               })
                               .catch(err => console.log("player_err: ", err))
-                          } else if (deviceArr.length === 0) {
+                            } else if (deviceArr.length === 0) {
                             console.log("there is no active device. first found device is activating...")
                             fetch("https://api.spotify.com/v1/me/player", {
                               method: "PUT",
@@ -182,18 +171,52 @@ function App(props) {
                               },
                               body: JSON.stringify({ device_ids: [deviceArr[0]], "play": true })
                             })
-                              .then(res => res.json())
+                            .then(res => res.json())
                               .then(result => {
                                 if (result.error && result.error.status === 401) {
                                   refreshToken()
-                                } else if (result.error == undefined) {
-                                  console.log("activate_device_result: ", result)
+                                } else if(result.error && result.error.status === 404) {
+                                  alert('Please run Spotify App in your device.')
                                 }
+                                  console.log("activate_device_result: ", result)
                               })
-                          }
+                            }
                         })
                         .catch(err => console.log("device_err: ", err))
-
+                      } else if(Object.keys(playlist).length === 0){
+                        console.log("there is no top 50 playlist for this country")
+                        if(window.confirm(`There is any Top 50 playlist for ${feature.text}\nDo you wanna create one?`)) {
+                          let isPublic
+                          if(window.confirm("Do you wanna make it public?")) {
+                            isPublic = true
+                          } else {
+                            isPublic = false
+                          }
+                          fetch("https://api.spotify.com/v1/me", {
+                            method: "GET",
+                            headers: {
+                              "Authorization": "Bearer " + accessToken
+                            }
+                          })
+                          .then(res => res.json())
+                          .then(result => {
+                            console.log("current_user_info: ", result)
+                            fetch(`https://api.spotify.com/v1/users/${result.id}/playlists`, {
+                              method: "POST",
+                              headers: {
+                                'Authorization': 'Bearer ' + accessToken,
+                                'Content-Type': 'application/json',                                
+                              },
+                              body: JSON.stringify({name: `${feature.text} Top 50`, public: isPublic, description: "Created via Earthify"})
+                            })
+                            .then(res => res.json())
+                            .then(result => {
+                              console.log("create_playlist_result: ", result)
+                              alert(`Congratulaitons! You've just create a playlist name ${feature.text} Top 50\nYou playlists' Spotify URI is ${result.uri}\nLet's add some track.\nMay the followers be with you! ;)` )
+                            })
+                          })
+                        }
+                      }
                       return playlist
                     })
                     .catch(err => console.log("search_err: ", err))
@@ -204,10 +227,10 @@ function App(props) {
             .catch((err) => {
               console.log("map_err: ", err)
             })
-        }
+          }
         function refreshToken() {
           console.log("access token is refreshing...")
-
+          
           fetch("https://accounts.spotify.com/api/token", {
             method: "POST",
             headers: {
@@ -234,14 +257,6 @@ function App(props) {
 
   }, [])
 
-
-
-  var handleMapColor = (e) => {
-    e.preventDefault()
-    setLight(!light)
-    console.log(light)
-    console.log(mapStyle)
-  }
 
   return (
     <>
