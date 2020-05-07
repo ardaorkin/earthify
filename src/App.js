@@ -1,21 +1,19 @@
 import React from 'react';
 import './App.css';
-import { useStyles } from './components/Styles'
 
 function App(props) {
-  const classes = useStyles();
-  // const localPlaylistStore = localStorage.getItem('playlist') || []
   const access_token = localStorage.getItem('access_token') || ""
   const [accessToken, setToken] = React.useState(access_token)
   const [auth, setAuth] = React.useState(window.localStorage.getItem('auth'))
   const [refresh, setRefresh] = React.useState(localStorage.getItem('refresh_token'))
-  // const [playlistStore, setPlaylist] = React.useStat(JSON.parse(localPlaylistStore))
+  const [playlistStore, setPlaylist] = React.useState()
 
-  var playlistsArr = []
+
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
   var ciCsB64 = "OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc="
-  var redirect_uri = window.location.origin + window.location.pathname
+  var redirect_uri = "http://localhost:3000/callback"
+  //var redirect_uri = window.location.origin + window.location.pathname
   var scopes = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
 
   var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
@@ -51,7 +49,6 @@ function App(props) {
 
   React.useEffect(() => {
 
-    var playlistUpdate = []
     var map = new mapboxgl.Map({
       container: 'root',
       style: "mapbox://styles/mapbox/light-v10",
@@ -120,7 +117,8 @@ function App(props) {
 
                       if (Object.keys(playlist).length > 0) {
 
-                        playlistUpdate.push(playlists)
+                        setPlaylist(playlists)
+
                         console.log("top_fifth_playlists: ", playlist)
 
                         fetch("https://api.spotify.com/v1/me/player/devices", {
@@ -217,7 +215,7 @@ function App(props) {
                                 .then(res => res.json())
                                 .then(result => {
                                   console.log("create_playlist_result: ", result)
-                                  alert(`Congratulaitons! You've just create a playlist name ${feature.text} Top 50\nYou playlists' Spotify URI is ${result.uri}\nLet's add some track.\nMay the followers be with you! ;)`)
+                                  alert(`Congratulaitons! You've just created a playlist name ${feature.text} Top 50\nThe Spotify URI of your playtlist is ${result.uri}\nLet's add some tracks.\nMay the followers be with you! ;)`)
                                 })
                             })
                         }
@@ -232,7 +230,6 @@ function App(props) {
             .catch((err) => {
               console.log("map_err: ", err)
             })
-
         }
         function refreshToken() {
           console.log("access token is refreshing...")
@@ -260,22 +257,24 @@ function App(props) {
       }
     })
 
+
   }, [])
+
 
 
 
   var handleChangePlaylist = (playlist) => {
 
-    fetch(`https://api.spotify.com/v1/me/player/play`, {
+    fetch("https://api.spotify.com/v1/me/player/play", {
       method: "PUT",
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-        "Content-Type": "application/json",
         "Accept": "application/json",
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
       },
       body: JSON.stringify({ context_uri: playlist.uri })
     })
-      .then(res => res.json())
+      .then(res => res)
       .then(result => console.log(result))
   }
 
@@ -283,18 +282,21 @@ function App(props) {
 
   return (
     <>
-      <div className={classes.paper}>
-        {/* {Object.keys(playlistStore).length > 0 ?
-          playlistStore.map(playlist => {
-            return (
-              <ul>
-                <li onClick={handleChangePlaylist(playlist)}>{playlist.name}</li>
-              </ul>
-            )
-          })
-          : null} */}
-        <div id="map" className="App">
+      <div className="settings">
+        <div>
+            {/* <button>Aç Kapa</button> */}
         </div>
+        <div>
+          <ul>
+            {playlistStore !== undefined ?
+              playlistStore.map(playlist => {
+                return <li onClick={() => handleChangePlaylist(playlist)} key={playlist.id}>{playlist.name}</li>
+              }) : null
+            }
+          </ul>
+        </div>
+      </div>
+      <div id="map" className="App">
       </div>
     </>
   );
