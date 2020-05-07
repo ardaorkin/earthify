@@ -1,23 +1,21 @@
 import React from 'react';
-import Menu from './components/Menu'
 import './App.css';
+import { useStyles } from './components/Styles'
 
 function App(props) {
+  const classes = useStyles();
+  // const localPlaylistStore = localStorage.getItem('playlist') || []
   const access_token = localStorage.getItem('access_token') || ""
   const [accessToken, setToken] = React.useState(access_token)
   const [auth, setAuth] = React.useState(window.localStorage.getItem('auth'))
   const [refresh, setRefresh] = React.useState(localStorage.getItem('refresh_token'))
+  // const [playlistStore, setPlaylist] = React.useStat(JSON.parse(localPlaylistStore))
 
-
+  var playlistsArr = []
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
   var ciCsB64 = "OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc="
-  var redirect_uri
-  if (window.location.origin !== "http://localhost:3000") {
-    redirect_uri = window.location.origin + window.location.pathname
-  } else {
-    redirect_uri = window.location.origin + "/callback"
-  }
+  var redirect_uri = "http://ardaorkin.github.io/callback"
   var scopes = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
 
   var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
@@ -50,10 +48,10 @@ function App(props) {
       .catch(err => console.log("acees_token_respone: ", err))
   }
 
-  
+
   React.useEffect(() => {
 
-
+    var playlistUpdate = []
     var map = new mapboxgl.Map({
       container: 'root',
       style: "mapbox://styles/mapbox/light-v10",
@@ -88,6 +86,7 @@ function App(props) {
                   console.log("map_results: ", feature)
 
                   fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(`${feature.text} top 50`)}&type=playlist`, {
+
                     method: "GET",
                     headers: {
                       'Authorization': `Bearer ${accessToken}`,
@@ -100,7 +99,7 @@ function App(props) {
                       }
                       console.log("search_results: ", result)
 
-                      
+
                       var playlists = []
                       var playlist = []
                       result.playlists.items.map(item => {
@@ -112,19 +111,18 @@ function App(props) {
                           playlists.push(item)
                         }
                       })
-                      
+
                       if (playlists.length > 1) {
                         playlist = playlists[0]
                       } else {
                         playlist = playlists
                       }
-                      
+
                       if (Object.keys(playlist).length > 0) {
-                        
-                        localStorage.setItem('playlists', JSON.stringify(playlists))
-                        
+
+                        playlistUpdate.push(playlists)
                         console.log("top_fifth_playlists: ", playlist)
-                        
+
                         fetch("https://api.spotify.com/v1/me/player/devices", {
                           method: "GET",
                           headers: {
@@ -265,12 +263,39 @@ function App(props) {
   }, [])
 
 
+
+  var handleChangePlaylist = (playlist) => {
+
+    fetch(`https://api.spotify.com/v1/me/player/play`, {
+      method: "PUT",
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify({ context_uri: playlist.uri })
+    })
+      .then(res => res.json())
+      .then(result => console.log(result))
+  }
+
+
+
   return (
     <>
-      <Menu>
-      </Menu>
+      <div className={classes.paper}>
+        {/* {Object.keys(playlistStore).length > 0 ?
+          playlistStore.map(playlist => {
+            return (
+              <ul>
+                <li onClick={handleChangePlaylist(playlist)}>{playlist.name}</li>
+              </ul>
+            )
+          })
+          : null} */}
         <div id="map" className="App">
         </div>
+      </div>
     </>
   );
 }
