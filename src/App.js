@@ -7,7 +7,8 @@ function App(props) {
   const [auth, setAuth] = React.useState(window.localStorage.getItem('auth'))
   const [refresh, setRefresh] = React.useState(localStorage.getItem('refresh_token'))
   const [playlistStore, setPlaylist] = React.useState()
-
+  const [earth, setEarth] = React.useState()
+  const [dark, setDark] = React.useState(false)
 
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
@@ -55,6 +56,7 @@ function App(props) {
       zoom: 3
     });
 
+    setEarth(map)
 
     map.on('click', (e) => {
 
@@ -188,7 +190,7 @@ function App(props) {
                           .catch(err => console.log("device_err: ", err))
                       } else if (Object.keys(playlist).length === 0) {
                         console.log("there is no top 50 playlist for this country")
-                        if (window.confirm(`There is any Top 50 playlist for ${feature.text}\nDo you wanna create one?`)) {
+                        if (window.confirm(`There isn't any Top 50 playlist for ${feature.text}.\nDo you wanna create one?`)) {
                           let isPublic
                           if (window.confirm("Do you wanna make it public?")) {
                             isPublic = true
@@ -215,7 +217,7 @@ function App(props) {
                                 .then(res => res.json())
                                 .then(result => {
                                   console.log("create_playlist_result: ", result)
-                                  alert(`Congratulaitons! You've just created a playlist name ${feature.text} Top 50\nThe Spotify URI of your playtlist is ${result.uri}\nLet's add some tracks.\nMay the followers be with you! ;)`)
+                                  alert(`Congratulaitons! You've just created a playlist named ${feature.text} Top 50!\nThe Spotify URI of your playtlist is ${result.uri}\nLet's add some tracks.\nMay the followers be with you! ;)`)
                                 })
                             })
                         }
@@ -237,7 +239,7 @@ function App(props) {
           fetch("https://accounts.spotify.com/api/token", {
             method: "POST",
             headers: {
-              "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6ZjJhZjc4MjVhOTA1NGNiNWE5MmMwZDZlMWEwNDAwNTY=",
+              "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc=",
               "Content-Type": "application/x-www-form-urlencoded",
               "Accept": "application/json"
             },
@@ -260,8 +262,16 @@ function App(props) {
 
   }, [])
 
-
-
+  var handleStyleMap = () => {
+    var currentMapStyle = earth.getStyle()
+    if (currentMapStyle.name === "Mapbox Light") {
+      earth.setStyle("mapbox://styles/mapbox/dark-v10")
+      setDark(true)
+    } else if (currentMapStyle.name === "Mapbox Dark") {
+      earth.setStyle("mapbox://styles/mapbox/light-v10")
+      setDark(false)
+    }
+  }
 
   var handleChangePlaylist = (playlist) => {
 
@@ -284,7 +294,7 @@ function App(props) {
     <>
       <div className="settings">
         <div>
-            {/* <button>Aç Kapa</button>   */}
+          <button onClick={() => handleStyleMap()}>{!dark ? "Dark Mode" : "Light Mode"}</button>
         </div>
         <div>
           <ul>
