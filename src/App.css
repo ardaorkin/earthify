@@ -1,3 +1,26 @@
+/*
+    Copyright (C) 2020  Arda Örkin
+
+    This file is part of Earthify.
+
+    Earthify is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Earthify is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Earthify.  If not, see <https://www.gnu.org/licenses/>.
+
+    ardaorkin3@gmail.com
+    https://twitter.com/10_09_20
+    https://github.com/ardaorkin
+*/
+
 html {
   margin: 0;
   min-height: 100vh;
@@ -15,6 +38,47 @@ body {
 
 .App {
   text-align: center;
+}
+
+
+@media only screen and (max-width: 400px) {
+  div>.settings {
+    min-height: 100%;
+    max-height: 100%;
+    width: 40%;
+    background-color: black;
+    color: white;
+    position: absolute;
+    left: 0;
+    opacity: 0.8;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  ul>li {
+    font-size: 10px;
+    border-bottom: solid 1px rgb(123, 255, 189);
+    margin-top: auto;
+    margin-bottom: 20px;
+    margin-left: 0;
+    margin-right: 20px;
+    padding: 20px;
+    cursor: pointer;
+    font-stretch: ultra-condensed;
+  }
+  
+  div>button {
+    background-color: rgb(56, 56, 56);
+    color: white;
+    margin-top: 10px;
+    margin-left: 16%;
+    width: 100px;
+    height: 30px;
+    border: 0px;
+    text-decoration: none;
+    font-size: 15 px;
+    cursor: pointer;
+  }
 }
 
 .settings::-webkit-scrollbar {
@@ -62,7 +126,7 @@ ul li::before {
   color: rgb(2, 223, 204);
   font-weight: bold;
   font-size: x-large;
-  display: inline-block; 
+  display: inline-block;
   width: 1em;
   margin-left: -1em;
 }
