@@ -17,6 +17,7 @@
 import React from 'react';
 import './App.css';
 import magnifier from './magnifier.png'
+import settings from './settings.png'
 
 function App(props) {
   const mapStyle = localStorage.getItem("map_style") || "light"
@@ -28,6 +29,8 @@ function App(props) {
   const [earth, setEarth] = React.useState()
   const [dark, setDark] = React.useState(mapStyle)
   const [searchCountry, setSearch] = React.useState()
+  const [openSettings, setSettings] = React.useState(true)
+
 
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
@@ -324,12 +327,12 @@ function App(props) {
         'Content-Type': 'application/json'
       }
     })
-    .then(res => res.json())
-    .then(result => {
-      console.log("searched_country_result: ", result)
-      earth.setCenter(result.features[0].geometry.coordinates)
-      earth.setZoom(5)
-    })
+      .then(res => res.json())
+      .then(result => {
+        console.log("searched_country_result: ", result)
+        earth.setCenter(result.features[0].geometry.coordinates)
+        earth.setZoom(5)
+      })
   }
 
   var handleKeyDown = (e) => {
@@ -338,27 +341,34 @@ function App(props) {
     }
   }
 
+  var toggleSettings = (e) => {
+    setSettings(!openSettings)
+  }
+
   return (
     <>
-      <div className="settings">
-        <div className="search-form">
-          <input name="search-country" type="text" className="search-input" value={searchCountry || ""} onKeyDown={handleKeyDown} onChange={handleSearchText}></input>
-          <div className="search-button"><input type="image" src={magnifier} alt="search" className="icon" onClick={() => handleSearchCountry(searchCountry)}></input></div>
+      <div className="settings" style={{ textAlign: openSettings ? "end" : "initial" }}>
+        <div className="settings-content" style={{ display: openSettings ? "block" : "none" }}>
+          <div className="search-form">
+            <input name="search-country" type="text" className="search-input" value={searchCountry || ""} onKeyDown={handleKeyDown} onChange={handleSearchText}></input>
+            <div className="search-button"><input type="image" src={magnifier} alt="search" className="icon" onClick={() => handleSearchCountry(searchCountry)}></input></div>
+          </div>
+          <div>
+            <button onClick={() => handleStyleMap()}>{dark === "light" ? "Dark Mode" : "Light Mode"}</button>
+          </div>
+          <div>
+            <ul>
+              {playlistStore !== undefined ?
+                playlistStore.map(playlist => {
+                  return <li onClick={() => handleChangePlaylist(playlist)} key={playlist.id}>{playlist.name}</li>
+                }) : localStorage.getItem("countrys_top_fifths") ? JSON.parse(localStorage.getItem("countrys_top_fifths")).map(playlist => {
+                  return <li onClick={() => handleChangePlaylist(playlist)} key={playlist.id}>{playlist.name}</li>
+                }) : null
+              }
+            </ul>
+          </div>
         </div>
-        <div>
-          <button onClick={() => handleStyleMap()}>{dark === "light" ? "Dark Mode" : "Light Mode"}</button>
-        </div>
-        <div>
-          <ul>
-            {playlistStore !== undefined ?
-              playlistStore.map(playlist => {
-                return <li onClick={() => handleChangePlaylist(playlist)} key={playlist.id}>{playlist.name}</li>
-              }) : localStorage.getItem("countrys_top_fifths") ? JSON.parse(localStorage.getItem("countrys_top_fifths")).map(playlist => {
-                return <li onClick={() => handleChangePlaylist(playlist)} key={playlist.id}>{playlist.name}</li>
-              }) : null
-            }
-          </ul>
-        </div>
+        <button className="toggle-settings" onClick={toggleSettings}></button>
       </div>
       <div id="map" className="App">
       </div>
