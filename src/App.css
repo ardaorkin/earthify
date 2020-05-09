@@ -100,9 +100,7 @@ body {
   div>.search-form {
     height: 20px;
     float: left;
-    margin-left: 15px;
-    margin-top: 10px;
-    margin-bottom: 5px;
+    margin: 0 auto;
   }
   div>.search-input {
     width: 90px;
@@ -111,17 +109,33 @@ body {
     font-size: 15px;
     font-weight: bold;
     color: rgb(56, 56, 56);
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-left: 15px;
   }
   div>.search-button {
     float: left;
     width: 20px;
     background-color: rgb(56, 56, 56);
-    text-align: center
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 10px;
   }
   div>.icon {
     width: 15px;
     height: auto;
     cursor: pointer;
+  }
+  div>.map-style-button {
+    width: 80px;
+    height: 30px;
+    margin-top: 20px;
+    font-size: 13px;
+  }
+  div>.lists {
+    position: relative;
+    top: 60px;
+    z-index: -1;
   }
 }
 
