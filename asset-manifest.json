@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/earthify/static/css/main.0eea9ca6.chunk.css",
-    "main.js": "/earthify/static/js/main.78bf01d2.chunk.js",
-    "main.js.map": "/earthify/static/js/main.78bf01d2.chunk.js.map",
+    "main.css": "/earthify/static/css/main.619c3ac9.chunk.css",
+    "main.js": "/earthify/static/js/main.5511553f.chunk.js",
+    "main.js.map": "/earthify/static/js/main.5511553f.chunk.js.map",
     "runtime-main.js": "/earthify/static/js/runtime-main.b3e3a8ea.js",
     "runtime-main.js.map": "/earthify/static/js/runtime-main.b3e3a8ea.js.map",
-    "static/js/2.ff7ab3c0.chunk.js": "/earthify/static/js/2.ff7ab3c0.chunk.js",
-    "static/js/2.ff7ab3c0.chunk.js.map": "/earthify/static/js/2.ff7ab3c0.chunk.js.map",
+    "static/js/2.e1bd2532.chunk.js": "/earthify/static/js/2.e1bd2532.chunk.js",
+    "static/js/2.e1bd2532.chunk.js.map": "/earthify/static/js/2.e1bd2532.chunk.js.map",
     "index.html": "/earthify/index.html",
-    "precache-manifest.e6e84b8095d72f8a4a3a5ee03746c587.js": "/earthify/precache-manifest.e6e84b8095d72f8a4a3a5ee03746c587.js",
+    "precache-manifest.d2aae7d00a29a2dd46f2453b5b580e7f.js": "/earthify/precache-manifest.d2aae7d00a29a2dd46f2453b5b580e7f.js",
     "service-worker.js": "/earthify/service-worker.js",
-    "static/css/main.0eea9ca6.chunk.css.map": "/earthify/static/css/main.0eea9ca6.chunk.css.map",
-    "static/js/2.ff7ab3c0.chunk.js.LICENSE.txt": "/earthify/static/js/2.ff7ab3c0.chunk.js.LICENSE.txt",
+    "static/css/main.619c3ac9.chunk.css.map": "/earthify/static/css/main.619c3ac9.chunk.css.map",
+    "static/js/2.e1bd2532.chunk.js.LICENSE.txt": "/earthify/static/js/2.e1bd2532.chunk.js.LICENSE.txt",
     "static/media/earthmusic.png": "/earthify/static/media/earthmusic.21749bcf.png",
-    "static/media/magnifier.png": "/earthify/static/media/magnifier.add06f1c.png",
+    "static/media/magnifier.png": "/earthify/static/media/magnifier.5792a2ef.png",
     "static/media/settings.png": "/earthify/static/media/settings.39b8785e.png"
   },
   "entrypoints": [
     "static/js/runtime-main.b3e3a8ea.js",
-    "static/js/2.ff7ab3c0.chunk.js",
-    "static/css/main.0eea9ca6.chunk.css",
-    "static/js/main.78bf01d2.chunk.js"
+    "static/js/2.e1bd2532.chunk.js",
+    "static/css/main.619c3ac9.chunk.css",
+    "static/js/main.5511553f.chunk.js"
   ]
 }
