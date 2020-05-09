@@ -84,6 +84,36 @@ body {
  font-size: 15 px;
  cursor: pointer;
   }
+
+  div>.search-form {
+    height: 20px;
+    float: left;
+    margin-left: 15px; 
+    margin-top: 10px; 
+    margin-bottom: 5px;
+  }
+  
+  div>.search-input {
+    width: 90px;
+    height: 15px; 
+    float: left;
+    font-size: 25px;
+    font-weight: bold;
+    color: rgb(56, 56, 56);
+  }
+  
+  div>.search-button {
+    float: left; 
+    width: 20px;
+    background-color: rgb(56, 56, 56); 
+    text-align: center
+  }
+  div>.icon {
+    width: 15px;
+    height: auto;
+    cursor: pointer;
+  }
+
 }
 
 .settings::-webkit-scrollbar {
@@ -147,6 +177,30 @@ button {
   text-decoration: none;
   font-size: 15 px;
   cursor: pointer;
+}
+
+.search-form {
+  height: 25px;
+  float: left;
+  margin-left: 15px; 
+  margin-top: 10px; 
+  margin-bottom: 5px;
+}
+
+.search-input {
+  width: 180px;
+  height: 25px; 
+  float: left;
+  font-size: 25px;
+  font-weight: bold;
+  color: rgb(56, 56, 56);
+}
+
+.search-button {
+  float: left; 
+  width: 50px;
+  background-color: rgb(56, 56, 56); 
+  text-align: center
 }
 
 .icon {

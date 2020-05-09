@@ -32,8 +32,8 @@ function App(props) {
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
   var ciCsB64 = "OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc="
-  // var redirect_uri = "http://localhost:3000/callback"
-  var redirect_uri = window.location.origin + window.location.pathname
+  var redirect_uri = "http://localhost:3000/callback"
+  //var redirect_uri = window.location.origin + window.location.pathname
   var scopes = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
 
   var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
@@ -327,17 +327,24 @@ function App(props) {
     .then(res => res.json())
     .then(result => {
       console.log("searched_country_result: ", result)
-      
+      earth.setCenter(result.features[0].geometry.coordinates)
+      earth.setZoom(5)
     })
+  }
+
+  var handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearchCountry(searchCountry)
+    }
   }
 
   return (
     <>
       <div className="settings">
-        {/* <div style={{height: "25px", float: "left", marginLeft: "15px", marginTop: "10px", marginBottom: "5px"}}>
-          <input name="search-country" type="text" style={{height: "25px", float: "left"}} value={searchCountry || ""} onChange={handleSearchText}></input>
-          <div style={{float: "left", width: "50px", backgroundColor: "rgb(56, 56, 56)", textAlign: "center"}}><input type="image" src={magnifier} alt="search" className="icon" onClick={() => handleSearchCountry(searchCountry)}></input></div>
-        </div> */}
+        <div className="search-form">
+          <input name="search-country" type="text" className="search-input" value={searchCountry || ""} onKeyDown={handleKeyDown} onChange={handleSearchText}></input>
+          <div className="search-button"><input type="image" src={magnifier} alt="search" className="icon" onClick={() => handleSearchCountry(searchCountry)}></input></div>
+        </div>
         <div>
           <button onClick={() => handleStyleMap()}>{dark === "light" ? "Dark Mode" : "Light Mode"}</button>
         </div>
