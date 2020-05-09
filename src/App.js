@@ -18,18 +18,20 @@ import React from 'react';
 import './App.css';
 
 function App(props) {
+  const topFifths = localStorage.getItem("countrys_top_fifths") || ""
+  const mapStyle = localStorage.getItem("map_style") || "light"
   const access_token = localStorage.getItem('access_token') || ""
   const [accessToken, setToken] = React.useState(access_token)
   const [auth, setAuth] = React.useState(window.localStorage.getItem('auth'))
   const [refresh, setRefresh] = React.useState(localStorage.getItem('refresh_token'))
   const [playlistStore, setPlaylist] = React.useState()
   const [earth, setEarth] = React.useState()
-  const [dark, setDark] = React.useState(false)
+  const [dark, setDark] = React.useState(mapStyle)
 
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
   var ciCsB64 = "OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc="
-  //var redirect_uri = "http://localhost:3000/callback"
+  // var redirect_uri = "http://localhost:3000/callback"
   var redirect_uri = window.location.origin + window.location.pathname
   var scopes = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
 
@@ -68,7 +70,7 @@ function App(props) {
 
     var map = new mapboxgl.Map({
       container: 'root',
-      style: "mapbox://styles/mapbox/light-v10",
+      style: `mapbox://styles/mapbox/${dark}-v10`,
       zoom: 3
     });
 
@@ -136,6 +138,8 @@ function App(props) {
                       if (Object.keys(playlist).length > 0) {
 
                         setPlaylist(playlists)
+
+                        localStorage.setItem("countrys_top_fifths", JSON.stringify(playlists))
 
                         console.log("top_fifth_playlists: ", playlist)
 
@@ -282,10 +286,12 @@ function App(props) {
     var currentMapStyle = earth.getStyle()
     if (currentMapStyle.name === "Mapbox Light") {
       earth.setStyle("mapbox://styles/mapbox/dark-v10")
-      setDark(true)
+      localStorage.setItem("map_style", "dark")
+      setDark(localStorage.getItem("map_style"))
     } else if (currentMapStyle.name === "Mapbox Dark") {
       earth.setStyle("mapbox://styles/mapbox/light-v10")
-      setDark(false)
+      localStorage.setItem("map_style", "light")
+      setDark(localStorage.getItem("map_style"))
     }
   }
 
@@ -310,12 +316,14 @@ function App(props) {
     <>
       <div className="settings">
         <div>
-          <button onClick={() => handleStyleMap()}>{!dark ? "Dark Mode" : "Light Mode"}</button>
+          <button onClick={() => handleStyleMap()}>{dark === "light" ? "Dark Mode" : "Light Mode"}</button>
         </div>
         <div>
           <ul>
             {playlistStore !== undefined ?
               playlistStore.map(playlist => {
+                return <li onClick={() => handleChangePlaylist(playlist)} key={playlist.id}>{playlist.name}</li>
+              }) : localStorage.getItem("countrys_top_fifths") ? JSON.parse(localStorage.getItem("countrys_top_fifths")).map(playlist => {
                 return <li onClick={() => handleChangePlaylist(playlist)} key={playlist.id}>{playlist.name}</li>
               }) : null
             }
