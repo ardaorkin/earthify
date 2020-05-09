@@ -16,9 +16,9 @@
 */
 import React from 'react';
 import './App.css';
+import magnifier from './magnifier.png'
 
 function App(props) {
-  const topFifths = localStorage.getItem("countrys_top_fifths") || ""
   const mapStyle = localStorage.getItem("map_style") || "light"
   const access_token = localStorage.getItem('access_token') || ""
   const [accessToken, setToken] = React.useState(access_token)
@@ -27,6 +27,7 @@ function App(props) {
   const [playlistStore, setPlaylist] = React.useState()
   const [earth, setEarth] = React.useState()
   const [dark, setDark] = React.useState(mapStyle)
+  const [searchCountry, setSearch] = React.useState()
 
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
@@ -311,10 +312,32 @@ function App(props) {
   }
 
 
+  var handleSearchText = (e) => {
+    e.preventDefault()
+    setSearch(e.target.value)
+  }
+
+  var handleSearchCountry = (e) => {
+    fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(e)}.json?&access_token=${mapboxgl.accessToken}`, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(result => {
+      console.log("searched_country_result: ", result)
+      
+    })
+  }
 
   return (
     <>
       <div className="settings">
+        {/* <div style={{height: "25px", float: "left", marginLeft: "15px", marginTop: "10px", marginBottom: "5px"}}>
+          <input name="search-country" type="text" style={{height: "25px", float: "left"}} value={searchCountry || ""} onChange={handleSearchText}></input>
+          <div style={{float: "left", width: "50px", backgroundColor: "rgb(56, 56, 56)", textAlign: "center"}}><input type="image" src={magnifier} alt="search" className="icon" onClick={() => handleSearchCountry(searchCountry)}></input></div>
+        </div> */}
         <div>
           <button onClick={() => handleStyleMap()}>{dark === "light" ? "Dark Mode" : "Light Mode"}</button>
         </div>
