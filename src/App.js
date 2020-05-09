@@ -17,6 +17,7 @@
 import React from 'react';
 import './App.css';
 import magnifier from './magnifier.png'
+import DeviceAlert from './alerts/DeviceAlert'
 import settings from './settings.png'
 
 function App(props) {
@@ -30,21 +31,21 @@ function App(props) {
   const [dark, setDark] = React.useState(mapStyle)
   const [searchCountry, setSearch] = React.useState()
   const [openSettings, setSettings] = React.useState(true)
-
-
+  const deviceAlert = React.useRef()
+  
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
   var ciCsB64 = "OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc="
   var redirect_uri = "http://localhost:3000/callback"
   //var redirect_uri = window.location.origin + window.location.pathname
   var scopes = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
-
+  
   var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
-
+  
   mapboxgl.accessToken = 'pk.eyJ1IjoiYXJkYW9ya2luIiwiYSI6ImNrOW9teW8wMzAyNnczbHJ0emVvNHE5dXcifQ.J_P9VwfH6UeYpgG5gw-JJQ';
-
+  
   if (window.location.search.match(/\?code/g) !== null) {
-
+    
     fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
       headers: {
@@ -54,7 +55,7 @@ function App(props) {
       },
       body: `grant_type=authorization_code&code=${window.location.search.split("=")[1]}&redirect_uri=${redirect_uri}&client_id=${client_id}&client_secret=${client_secret}`
     })
-      .then(res => res.json())
+    .then(res => res.json())
       .then(result => {
         localStorage.setItem('create_access_token_result', JSON.stringify(result))
         localStorage.setItem('access_token', result.access_token)
@@ -67,11 +68,11 @@ function App(props) {
       .then(() => window.location = window.location.origin + "/earthify")
       .then(() => window.localStorage.setItem('auth', true))
       .catch(err => console.log("acees_token_respone: ", err))
-  }
-
-
-  React.useEffect(() => {
-
+    }
+    
+    
+    React.useEffect(() => {
+      
     var map = new mapboxgl.Map({
       container: 'root',
       style: `mapbox://styles/mapbox/${dark}-v10`,
@@ -79,6 +80,7 @@ function App(props) {
     });
 
     setEarth(map)
+
 
     map.on('click', (e) => {
 
@@ -160,7 +162,7 @@ function App(props) {
                             }
                             console.log("all_devices_result: ", result)
                             if (result.devices.length === 0) {
-                              alert('Please run Spotify App in your device.')
+                              deviceAlert.current.state.display = "block"
                             }
                             var deviceArr = []
                             result.devices.map(device => {
@@ -204,8 +206,9 @@ function App(props) {
                                 .then(result => {
                                   if (result.error && result.error.status === 401) {
                                     refreshToken()
-                                  } else if (result.error && result.error.status === 404) {
-                                    alert('Please run Spotify App in your device.')
+                                  } 
+                                  else if (result.error && result.error.status === 404) {
+                                    deviceAlert.current.state.display = "block"
                                   }
                                   console.log("activate_device_result: ", result)
                                 })
@@ -275,7 +278,6 @@ function App(props) {
               localStorage.setItem('access_token', result.access_token)
             })
             .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
-            .then(() => requestToSpotify())
             .then(() => window.location.reload())
         }
 
@@ -311,7 +313,27 @@ function App(props) {
       body: JSON.stringify({ context_uri: playlist.uri })
     })
       .then(res => res)
-      .then(result => console.log(result))
+      .then(result => {
+        console.log("pick_playlist_from_the_list: ", result)
+        if (result.status === 401) {
+          fetch("https://accounts.spotify.com/api/token", {
+            method: "POST",
+            headers: {
+              "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc=",
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Accept": "application/json"
+            },
+            body: `grant_type=refresh_token&refresh_token=${refresh}`
+          })
+            .then(res => res.json())
+            .then(result => {
+              console.log("updating access token...")
+              localStorage.setItem('access_token', result.access_token)
+            })
+            .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
+            .then(() => window.location.reload())
+        }
+      })
   }
 
 
@@ -347,16 +369,19 @@ function App(props) {
 
   return (
     <>
+      <DeviceAlert ref={deviceAlert} />
       <div className="settings" style={{ textAlign: openSettings ? "end" : "initial" }}>
         <div className="settings-content" style={{ display: openSettings ? "block" : "none" }}>
-          <div className="search-form">
-            <input name="search-country" type="text" className="search-input" value={searchCountry || ""} onKeyDown={handleKeyDown} onChange={handleSearchText}></input>
-            <div className="search-button"><input type="image" src={magnifier} alt="search" className="icon" onClick={() => handleSearchCountry(searchCountry)}></input></div>
+          <div className="modes">
+            <div className="search-form">
+              <input name="search-input" type="text" className="search-input" value={searchCountry || ""} onKeyDown={handleKeyDown} onChange={handleSearchText}></input>
+              <div className="search-button"><input type="image" src={magnifier} alt="search" className="icon" onClick={() => handleSearchCountry(searchCountry)}></input></div>
+            </div>
+            <div>
+              <button className="map-style-button" onClick={() => handleStyleMap()}>{dark === "light" ? "Dark Mode" : "Light Mode"}</button>
+            </div>
           </div>
-          <div>
-            <button onClick={() => handleStyleMap()}>{dark === "light" ? "Dark Mode" : "Light Mode"}</button>
-          </div>
-          <div>
+          <div className="lists">
             <ul>
               {playlistStore !== undefined ?
                 playlistStore.map(playlist => {
