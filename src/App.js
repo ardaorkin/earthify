@@ -87,9 +87,9 @@ function App(props) {
         }
       })
         .then(res => {
-          if(res.status === 204) {
+          if (res.status === 204) {
             return res
-          }else if(res.status === 200) {
+          } else if (res.status === 200) {
             return res.json()
           }
         })
@@ -530,7 +530,7 @@ function App(props) {
             <p className="now-playing-track-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.name : null}</p>
             <p className="now-playing-artist-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.artists.map(el => el.name) : null}</p>
           </div>
-          <div className="now-playing-progress">
+          <div className="now-playing-progress" style={{ background: Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? `linear-gradient(90deg, rgb(0,128,128) ${(currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%"}, rgb(255,255,255) ${(currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%"})` : "white" }}>
             <div style={{ maxWidth: "95%" }}>
               <div className="now-playing-progress-ball" style={{ marginLeft: Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? (currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%" : "0%" }}></div>
             </div>
