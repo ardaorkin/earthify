@@ -191,7 +191,9 @@ function App(props) {
 
                   map.getStyle().layers.map(layer => {
                     if(layer.type === "circle" && layer.id !== feature.text + "-layer") {
-                      map.removeLayer(layer.id)
+                      map.setLayoutProperty(layer.id, "visibility", "none")
+                    }else if(layer.type === "circle" && layer.id == feature.text + "-layer") {
+                      map.setLayoutProperty(layer.id, "visibility", "visible")
                     }
                   })
 
