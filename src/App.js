@@ -35,6 +35,7 @@ function App(props) {
   const [showSongs, setShowSongs] = React.useState(null)
   const [currentlyPlaying, setCurrentlyPlaying] = React.useState({})
   const [showCurrentPlaying, setShowCurrentPlaying] = React.useState(false)
+  const [mapSource, setSource] = React.useState()
 
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
@@ -76,6 +77,7 @@ function App(props) {
 
   React.useEffect(() => {
 
+    var layers = []
 
     setInterval(() => {
       fetch(`https://api.spotify.com/v1/me/player`, {
@@ -132,6 +134,7 @@ function App(props) {
 
     map.on('click', (e) => {
 
+
       if (!window.location.search.match(/\?code/g) && !auth) {
         window.location = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scopes)}&show_dialog=true`
       }
@@ -155,6 +158,45 @@ function App(props) {
 
                 if (feature.place_type[0] === "country") {
                   console.log("map_results: ", feature)
+
+                  
+                  
+                  if ("is source exist", map.getStyle().sources.hasOwnProperty(feature.id) === false) {
+                    map.addSource(feature.id, {
+                      "type": "geojson",
+                      "data": {
+                        "type": feature.type,
+                        "geometry": feature.geometry
+                      }
+                    })
+                  }
+
+                  map.getStyle().layers.map(layer => {
+                    layers.push(layer.id)
+                  })
+
+                  
+                  if (layers.indexOf(feature.text + "-layer") === -1) {
+                    map.addLayer({
+                      "id": feature.text + "-layer",
+                      "source": feature.id,
+                      "type": "circle",
+                    })
+                  }
+                  
+                  map.setPaintProperty(feature.text + "-layer", 'circle-color', 'hsl(138, 100%, 40%)');
+                  
+                  var defaultMapColor = map.getStyle().layers[0].paint["background-color"]
+                  
+
+                  map.getStyle().layers.map(layer => {
+                    if(layer.type === "circle" && layer.id !== feature.text + "-layer") {
+                      map.removeLayer(layer.id)
+                    }
+                  })
+
+
+                  console.log("current_map_style: ", map.getStyle())
 
                   fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(`${feature.text} top 50`)}&type=playlist`, {
 
@@ -526,11 +568,12 @@ function App(props) {
         <div className="now-playing">
           <button className="now-playing-button" onClick={() => togglePausePlay()}>{currentlyPlaying.is_playing == true ? "ıı" : "►"}</button>
           <div className="now-playing-info">
-            {console.log("currently playing: ", currentlyPlaying)}
             <p className="now-playing-track-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.name : null}</p>
-            <p className="now-playing-artist-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.artists.map(el => el.name) : null}</p>
+            <p className="now-playing-artist-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.artists.map(el => el.name + " ") : null}</p>
           </div>
-          <div className="now-playing-progress" style={{ background: Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? `linear-gradient(90deg, rgb(0,128,128) ${(currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%"}, rgb(255,255,255) ${(currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%"})` : "white" }}>
+          <div
+            className="now-playing-progress"
+            style={{ background: Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? `linear-gradient(90deg, rgb(0,128,128) ${(currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%"}, rgb(255,255,255) ${(currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%"})` : "white" }}>
             <div style={{ maxWidth: "95%" }}>
               <div className="now-playing-progress-ball" style={{ marginLeft: Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? (currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%" : "0%" }}></div>
             </div>
