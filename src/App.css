@@ -121,11 +121,22 @@ body {
     height: auto;
     cursor: pointer;
   }
-  div>.map-style-button {
-    width: 80px;
+  div > .map-style-button {
+    width: 60px;
     height: 30px;
     margin-top: 20px;
-    font-size: 13px;
+    margin-left: 5px;
+    float: left;
+    font-size: 10px;
+  }
+  
+  div > .toggle-player-button {
+    width: 60px;
+    height: 30px;
+    margin-top: 20px;
+    margin-left: 10px;
+    float: left;
+    font-size: 10px;
   }
   div>.lists {
     position: relative;
@@ -135,6 +146,73 @@ body {
   ul > .songs-list {
     font-size: 10px;
   }
+
+  div > .now-playing {
+    box-sizing: border-box;
+    width: 200px;
+    height: 50px;
+    background-color: black;
+    position: fixed;
+    bottom: 10px;
+    left: 42%;
+    opacity: 0.8;
+    border-radius: 500px;
+    text-align: start;
+    display: grid;
+    grid-template-areas: 
+    'button info info'
+    'button progress progress';
+    grid-template-columns: 15% 45% 35%;
+    grid-template-rows: 40% 60%;
+  }
+  
+  div > .now-playing-button {
+    background-color: initial;
+    font-size: 20px;
+    margin: 0 auto;
+    margin-top: 15px;
+    margin-left: -30px;
+    float: left;
+    grid-area: button;
+  }
+  
+  div > .now-playing-info {
+    color: white;
+    float: left;
+    margin-top: 5px;
+    font-size: 10px;
+    grid-area: info;
+    padding: 0;
+    margin: 0 auto;
+  }
+  
+  div > .now-playing-track-name {
+    margin: 0 auto;
+    margin-bottom: 0;
+  }
+  
+  div > .now-playing-artist-name {
+    margin: 0 auto;
+    margin-top: -12px;
+    font-size: 8px;
+  }
+  
+  div > .now-playing-progress {
+    background-color: white;
+    height: 1px;
+    margin-top: 10px;
+    grid-area: progress;
+  }
+  
+  div > .now-playing-progress-ball {
+    border-radius: 100%;
+    height: 10px;
+    background-color: teal;
+    width: 10px;
+    margin: 0 auto;
+    margin-top: -4px;
+  }
+
 }
 
 /*Login screen style*/
@@ -302,7 +380,17 @@ button {
   width: 150px;
   height: 40px;
   margin-top: 20px;
-  margin-right: 45px;
+  margin-left: 5px;
+  float: left;
+  font-size: 20px;
+}
+
+.toggle-player-button {
+  width: 150px;
+  height: 40px;
+  margin-top: 20px;
+  margin-left: 10px;
+  float: left;
   font-size: 20px;
 }
 
@@ -336,6 +424,70 @@ button {
   height: auto;
   cursor: pointer;
 }
+
+.now-playing {
+  box-sizing: border-box;
+  width: 500px;
+  height: 100px;
+  background-color: black;
+  position: fixed;
+  bottom: 10px;
+  right: 40%;
+  opacity: 0.8;
+  border-radius: 500px;
+  text-align: start;
+  display: grid;
+  grid-template-areas: 
+  'button info info'
+  'button progress progress';
+  grid-template-columns: 15% 45% 35%;
+  grid-template-rows: 50% 50%;
+}
+
+.now-playing-button {
+  background-color: initial;
+  font-size: 50px;
+  margin: 0 auto;
+  margin-top: 27px;
+  float: left;
+  grid-area: button;
+}
+
+.now-playing-info {
+  color: white;
+  float: left;
+  margin-top: 5px;
+  font-size: 20px;
+  grid-area: info;
+  padding: 0;
+}
+
+.now-playing-track-name {
+  margin: 0 auto;
+  padding: 0;
+}
+
+.now-playing-artist-name {
+  margin: 3px auto 3px auto;
+  font-size: 15px;
+  padding: 0;
+}
+
+.now-playing-progress {
+  background-color: white;
+  height: 1px;
+  margin-top: 10px;
+  grid-area: progress;
+}
+
+.now-playing-progress-ball {
+  border-radius: 100%;
+  height: 30px;
+  background-color: teal;
+  width: 30px;
+  margin-top: -14px;
+}
+
 
 /*App itself style*/
 

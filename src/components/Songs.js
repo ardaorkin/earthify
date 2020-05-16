@@ -20,7 +20,8 @@ class Songs extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            playlist: null
+            playlist: null,
+            _isPlaying: false
         }
         this.handlePlaySong = this.handlePlaySong.bind(this)
     }
@@ -79,6 +80,9 @@ class Songs extends React.Component {
                     alert('Please open Spotify App in your device')
                 }
             })
+            .then(() => this.setState({
+                _isPlaying: true
+            }))
     }
 
     render() {

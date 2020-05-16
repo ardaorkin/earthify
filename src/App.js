@@ -33,6 +33,8 @@ function App(props) {
   const [openSettings, setSettings] = React.useState(true)
   const [songsComponent, setSongsComponent] = React.useState()
   const [showSongs, setShowSongs] = React.useState(null)
+  const [currentlyPlaying, setCurrentlyPlaying] = React.useState({})
+  const [showCurrentPlaying, setShowCurrentPlaying] = React.useState(false)
 
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
@@ -73,6 +75,45 @@ function App(props) {
 
 
   React.useEffect(() => {
+
+
+    setInterval(() => {
+      fetch(`https://api.spotify.com/v1/me/player`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem('access_token')}`,
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        }
+      })
+        .then(res => res.json())
+        .then(result => {
+          if (result) {
+
+            if (result.error) {
+              if (result.error.status === 401) {
+                fetch("https://accounts.spotify.com/api/token", {
+                  method: "POST",
+                  headers: {
+                    "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc=",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Accept": "application/json"
+                  },
+                  body: `grant_type=refresh_token&refresh_token=${localStorage.getItem('refresh_token')}`
+                })
+                  .then(res => res.json())
+                  .then(result => {
+                    console.log("updating access token...")
+                    localStorage.setItem('access_token', result.access_token)
+                  })
+                  .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
+                  .then(() => window.location.reload())
+              }
+            }
+            setCurrentlyPlaying(result)
+          }
+        })
+    }, 1000)
 
     var map = new mapboxgl.Map({
       container: 'root',
@@ -379,6 +420,43 @@ function App(props) {
     }
   }
 
+  var togglePausePlay = (e) => {
+    if (Object.keys(currentlyPlaying).length > 0) {
+      if (currentlyPlaying.is_playing === true) {
+
+        fetch('https://api.spotify.com/v1/me/player/pause', {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem('access_token')}`
+          }
+        })
+          .then(res => res)
+          .then(result => console.log("paused_result: ", result))
+      } else if (currentlyPlaying.is_playing === false) {
+        fetch(`https://api.spotify.com/v1/me/player/play`, {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem('access_token')}`,
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({ uris: [currentlyPlaying.item.uri] })
+        })
+          .then(res => res)
+          .then(result => {
+            console.log("song_playing: ", result)
+            if (result.status === 404) {
+              alert('Please open Spotify App in your device')
+            }
+          })
+      }
+    }
+  }
+
+  var toggleShowCurrentPlaying = (e) => {
+    setShowCurrentPlaying(!showCurrentPlaying)
+  }
+
   return (
     <>
       <div className="settings" style={{ textAlign: openSettings ? "end" : "initial" }}>
@@ -390,6 +468,7 @@ function App(props) {
             </div>
             <div>
               <button className="map-style-button" onClick={() => handleStyleMap()}>{dark === "light" ? "Dark Mode" : "Light Mode"}</button>
+              <button className="toggle-player-button" onClick={() => toggleShowCurrentPlaying()}>{showCurrentPlaying === true ? "Hide Player" : "Show Player"}</button>
             </div>
           </div>
           <div className="lists">
@@ -437,6 +516,20 @@ function App(props) {
       </div>
       <div id="map" className="App">
       </div>
+      {showCurrentPlaying === true ?
+        <div className="now-playing">
+          <button className="now-playing-button" onClick={() => togglePausePlay()}>{currentlyPlaying.is_playing == true ? "ıı" : "►"}</button>
+          <div className="now-playing-info">
+            <p className="now-playing-track-name">{Object.keys(currentlyPlaying).length > 0 ? currentlyPlaying.item.name : null}</p>
+            <p className="now-playing-artist-name">{Object.keys(currentlyPlaying).length > 0 ? currentlyPlaying.item.artists.map(el => el.name) : null}</p>
+          </div>
+          <div className="now-playing-progress">
+            <div style={{ maxWidth: "95%" }}>
+              <div className="now-playing-progress-ball" style={{ marginLeft: Object.keys(currentlyPlaying).length > 0 ? (currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%" : "20%" }}></div>
+            </div>
+          </div>
+        </div>
+        : null}
     </>
   );
 }
