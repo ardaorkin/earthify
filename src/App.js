@@ -86,7 +86,13 @@ function App(props) {
           "Accept": "application/json"
         }
       })
-        .then(res => res.json())
+        .then(res => {
+          if(res.status === 204) {
+            return res
+          }else if(res.status === 200) {
+            return res.json()
+          }
+        })
         .then(result => {
           if (result) {
 
@@ -520,12 +526,13 @@ function App(props) {
         <div className="now-playing">
           <button className="now-playing-button" onClick={() => togglePausePlay()}>{currentlyPlaying.is_playing == true ? "ıı" : "►"}</button>
           <div className="now-playing-info">
-            <p className="now-playing-track-name">{Object.keys(currentlyPlaying).length > 0 ? currentlyPlaying.item.name : null}</p>
-            <p className="now-playing-artist-name">{Object.keys(currentlyPlaying).length > 0 ? currentlyPlaying.item.artists.map(el => el.name) : null}</p>
+            {console.log("currently playing: ", currentlyPlaying)}
+            <p className="now-playing-track-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.name : null}</p>
+            <p className="now-playing-artist-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.artists.map(el => el.name) : null}</p>
           </div>
           <div className="now-playing-progress">
             <div style={{ maxWidth: "95%" }}>
-              <div className="now-playing-progress-ball" style={{ marginLeft: Object.keys(currentlyPlaying).length > 0 ? (currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%" : "20%" }}></div>
+              <div className="now-playing-progress-ball" style={{ marginLeft: Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? (currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%" : "0%" }}></div>
             </div>
           </div>
         </div>
