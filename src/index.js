@@ -3,14 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import Intro from './Intro'
-/* temporary import */
-import DeviceAlert from './alerts/DeviceAlert'
-/* temporary import */
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <DeviceAlert /> */}
     {localStorage.getItem("access_token") == null ? <Intro /> : <App />}
   </React.StrictMode>,
   document.getElementById('root')

@@ -39,11 +39,6 @@ body {
   text-align: center;
 }
 
-.intro {
-  background-color: rgb(31, 30, 30);
-  text-align: center;
-  min-height: 100vh;
-}
 
 @media only screen and (max-width: 400px) {
   div>.settings {
@@ -137,10 +132,54 @@ body {
     top: 60px;
     z-index: -1;
   }
+  ul > .songs-list {
+    font-size: 10px;
+  }
 }
 
+/*Login screen style*/
+
+.intro {
+  background-color: rgb(31, 30, 30);
+  text-align: center;
+  min-height: 100vh;
+}
+
+.intro-icon {
+  width: 300px;
+  padding: 5.5%;
+  padding-bottom: 1%;
+  margin-bottom: auto;
+}
+
+.intro-button {
+  min-width: 160px;
+  min-height: 50px;
+  box-sizing: border-box;
+  font-size: 14px;
+  line-height: 1;
+  border-radius: 500px;
+  text-align: center;
+  margin: 0 auto;
+  transition-property: background-color, border-color, color, box-shadow, filter;
+  transition-duration: .3s;
+  border-width: 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: normal;
+  background-color: rgb(56, 56, 56);
+}
+
+.intro-button:hover {
+  transform: scale(1.1);
+}
+
+/*Login screen style*/
+
+/*App itself style*/
+
 .settings {
-  width: 40%;
+  width: 18%;
   text-align: end;
 }
 .settings-content {
@@ -148,7 +187,7 @@ body {
   float: left;
   min-height: 100%;
   max-height: 100%;
-  width: 40%;
+  width: 18%;
   background-color: black;
   color: white;
   position: absolute;
@@ -201,20 +240,20 @@ body {
 
 li {
   font-size: 22px;
-  border-bottom: solid 1px rgb(123, 255, 189);
+  border-bottom: solid 1px rgb(2, 223, 204);
+  border-bottom-style: groove;
   margin-bottom: 20px;
-  margin-left: 0;
-  margin-right: 20px;
+  margin-left: auto;
   padding: 20px;
-  cursor: pointer;
+  float: left;
 }
 
 ul {
   list-style-type: none;
-  text-align: initial;
+  text-align: start;
 }
 
-ul li::before {
+ul .li-text::before {
   content: "\2022";
   color: rgb(2, 223, 204);
   font-weight: bold;
@@ -222,6 +261,27 @@ ul li::before {
   display: inline-block;
   width: 1em;
   margin-left: -1em;
+}
+
+.playlist-list {
+ margin-left: -1em;
+}
+
+.li-text {
+  cursor: pointer;
+  float: left;
+  margin-right: 10px;
+}
+
+.songs-button {
+  float: right;
+  margin: 0 auto;
+  position: absolute;
+  right: 10px;
+  width: 15px;
+  min-height: fit-content;
+  background-color: inherit;
+  font-size: large;
 }
 
 button {
@@ -239,10 +299,11 @@ button {
 }
 
 .map-style-button {
-  width: 200px;
-  height: 50px;
+  width: 150px;
+  height: 40px;
   margin-top: 20px;
-  font-size: 30px;
+  margin-right: 45px;
+  font-size: 20px;
 }
 
 .search-form {
@@ -254,110 +315,49 @@ button {
 }
 
 .search-input {
-  width: 300px;
-  height: 35px;
+  width: 200px;
+  height: 25px;
   float: left;
-  font-size: 35px;
-  margin-left: 150px;
-  margin-bottom: 20px;
+  font-size: 25px;
+  margin-left: 25px;
   font-weight: bold;
   color: rgb(56, 56, 56);
 }
 
 .search-button {
   float: left;
-  width: 50px;
+  width: 40px;
   background-color: rgb(56, 56, 56);
   text-align: center
 }
 
 .icon {
-  width: 35px;
+  width: 25px;
   height: auto;
   cursor: pointer;
 }
 
-.intro-icon {
-  width: 300px;
-  padding: 5.5%;
-  padding-bottom: 1%;
-  margin-bottom: auto;
-}
+/*App itself style*/
 
-.intro-button {
-  min-width: 160px;
-  min-height: 50px;
-  box-sizing: border-box;
-  font-size: 14px;
-  line-height: 1;
-  border-radius: 500px;
-  text-align: center;
-  margin: 0 auto;
-  transition-property: background-color, border-color, color, box-shadow, filter;
-  transition-duration: .3s;
-  border-width: 0;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  white-space: normal;
-  background-color: rgb(56, 56, 56);
-}
+/*--------------------*/
 
-.intro-button:hover {
-  transform: scale(1.1);
-}
+/*Song List Style*/
 
-.alert-component {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  margin: 0 auto;
-  z-index: 1;
+.songs-list {
+  font-size: 15px;
+  border-bottom: 0px;
+  padding: 0;
+  margin-top: 10px;
+  cursor: pointer;
 }
-.alert {
-  min-height: 100vh;
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  background-color: white;
-  opacity: 0.3;
-  z-index: -1;
-}
-
-.alert-card {
-  width: 350px;
-  height: 170px;
-  background-color: rgb(26, 26, 26);
-  border-radius: 1em;
-  text-align: end;
-  margin: 0 auto;
-  margin-top: 15%;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-
-}
-
-.alert-text {
-  text-align: initial;
-  color: white;
-  padding: 1em;
-  font-size: 25px;
-  margin: 0 auto;
-  line-height: 1;
-}
-
-.alert-options {
-  text-align: end;
-}
-
-.alert-button {
-  width: 70px;
-  height: 30px;
-  box-sizing: border-box;
-  border-radius: 500px;
-  margin: 0 auto;
-  margin-right: 10px;
-  color: white;
-  font-size: 20px;
+.songs-list::before {
+  content: "\2022";
+  color: rgb(2, 223, 204);
   font-weight: bold;
+  font-size: x-large;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
 }
+
+/*Song List Style*/

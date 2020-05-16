@@ -17,8 +17,8 @@
 import React from 'react';
 import './App.css';
 import magnifier from './magnifier.png'
-import DeviceAlert from './alerts/DeviceAlert'
 import settings from './settings.png'
+import Songs from './components/Songs'
 
 function App(props) {
   const mapStyle = localStorage.getItem("map_style") || "light"
@@ -31,21 +31,22 @@ function App(props) {
   const [dark, setDark] = React.useState(mapStyle)
   const [searchCountry, setSearch] = React.useState()
   const [openSettings, setSettings] = React.useState(true)
-  const deviceAlert = React.useRef()
-  
+  const [songsComponent, setSongsComponent] = React.useState()
+  const [showSongs, setShowSongs] = React.useState(null)
+
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
   var ciCsB64 = "OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc="
-  // var redirect_uri = "http://localhost:3000/callback"
+  //var redirect_uri = "http://localhost:3000" + "/callback"
   var redirect_uri = window.location.origin + window.location.pathname
   var scopes = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
-  
+
   var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
-  
+
   mapboxgl.accessToken = 'pk.eyJ1IjoiYXJkYW9ya2luIiwiYSI6ImNrOW9teW8wMzAyNnczbHJ0emVvNHE5dXcifQ.J_P9VwfH6UeYpgG5gw-JJQ';
-  
+
   if (window.location.search.match(/\?code/g) !== null) {
-    
+
     fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
       headers: {
@@ -55,7 +56,7 @@ function App(props) {
       },
       body: `grant_type=authorization_code&code=${window.location.search.split("=")[1]}&redirect_uri=${redirect_uri}&client_id=${client_id}&client_secret=${client_secret}`
     })
-    .then(res => res.json())
+      .then(res => res.json())
       .then(result => {
         localStorage.setItem('create_access_token_result', JSON.stringify(result))
         localStorage.setItem('access_token', result.access_token)
@@ -68,11 +69,11 @@ function App(props) {
       .then(() => window.location = window.location.origin + "/earthify")
       .then(() => window.localStorage.setItem('auth', true))
       .catch(err => console.log("acees_token_respone: ", err))
-    }
-    
-    
-    React.useEffect(() => {
-      
+  }
+
+
+  React.useEffect(() => {
+
     var map = new mapboxgl.Map({
       container: 'root',
       style: `mapbox://styles/mapbox/${dark}-v10`,
@@ -162,7 +163,7 @@ function App(props) {
                             }
                             console.log("all_devices_result: ", result)
                             if (result.devices.length === 0) {
-                              deviceAlert.current.state.display = "block"
+                              alert('Please open Spotify App in your device')
                             }
                             var deviceArr = []
                             result.devices.map(device => {
@@ -206,9 +207,9 @@ function App(props) {
                                 .then(result => {
                                   if (result.error && result.error.status === 401) {
                                     refreshToken()
-                                  } 
+                                  }
                                   else if (result.error && result.error.status === 404) {
-                                    deviceAlert.current.state.display = "block"
+                                    alert('Please open Spotify App in your device')
                                   }
                                   console.log("activate_device_result: ", result)
                                 })
@@ -367,9 +368,19 @@ function App(props) {
     setSettings(!openSettings)
   }
 
+
+  var handleSongs = (e) => {
+    if (showSongs === e) {
+      setShowSongs(null)
+    } else {
+      var songsComponent = <><Songs playlist_id={e} /></>
+      setSongsComponent(songsComponent)
+      setShowSongs(e)
+    }
+  }
+
   return (
     <>
-      <DeviceAlert ref={deviceAlert} />
       <div className="settings" style={{ textAlign: openSettings ? "end" : "initial" }}>
         <div className="settings-content" style={{ display: openSettings ? "block" : "none" }}>
           <div className="modes">
@@ -385,12 +396,41 @@ function App(props) {
             <ul>
               {playlistStore !== undefined ?
                 playlistStore.map(playlist => {
-                  return <li onClick={() => handleChangePlaylist(playlist)} key={playlist.id}>{playlist.name}</li>
+                  return (
+                    <>
+                      <li key={playlist.id} className="playlist-list">
+                        <div
+                          className="li-text"
+                          onClick={() => handleChangePlaylist(playlist)}>
+                          {playlist.name}
+                        </div>
+                        <button
+                          className="songs-button"
+                          onClick={() => handleSongs(playlist.id)}>{showSongs === playlist.id ? "▼" : "►"}</button>
+                      </li>
+                      {showSongs === playlist.id ? songsComponent : null}
+                    </>
+                  )
                 }) : localStorage.getItem("countrys_top_fifths") ? JSON.parse(localStorage.getItem("countrys_top_fifths")).map(playlist => {
-                  return <li onClick={() => handleChangePlaylist(playlist)} key={playlist.id}>{playlist.name}</li>
+                  return (
+                    <>
+                      <li key={playlist.id} className="playlist-list">
+                        <div
+                          className="li-text"
+                          onClick={() => handleChangePlaylist(playlist)}>
+                          {playlist.name}
+                        </div>
+                        <button
+                          className="songs-button"
+                          onClick={() => handleSongs(playlist.id)}>{showSongs === playlist.id ? "▼" : "►"}</button>
+                      </li>
+                      {showSongs === playlist.id ? songsComponent : null}
+                    </>
+                  )
                 }) : null
               }
             </ul>
+
           </div>
         </div>
         <button className="toggle-settings" onClick={toggleSettings}></button>
@@ -402,3 +442,4 @@ function App(props) {
 }
 
 export default App;
+
