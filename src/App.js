@@ -18,6 +18,8 @@ import React from 'react';
 import './App.css';
 import magnifier from './magnifier.png'
 import settings from './settings.png'
+import volume from './volume.png'
+import mute from './mute.png'
 import Songs from './components/Songs'
 
 function App(props) {
@@ -598,6 +600,16 @@ function App(props) {
     }
   }
 
+  var msToTime = (duration) => {
+    var seconds = parseInt((duration/1000)%60)
+    var minutes = parseInt((duration/(1000*60))%60)
+
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+    return minutes + ":" + seconds;
+}
+
   return (
     <>
       <div className="settings" style={{ textAlign: openSettings ? "end" : "initial" }}>
@@ -659,11 +671,14 @@ function App(props) {
       </div>
       {showCurrentPlaying === true ?
         <div className="now-playing">
+          <img className="now-playing-image" src={Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item ? currentlyPlaying.item.album.images[currentlyPlaying.item.album.images.length - 1].url : null} alt="album-image"></img>
+
           <button className="now-playing-button" onClick={() => togglePausePlay()}>{currentlyPlaying.is_playing == true ? "ıı" : "►"}</button>
           <div className="now-playing-info">
             <p className="now-playing-track-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.name : null}</p>
             <p className="now-playing-artist-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.artists.map(el => el.name + " ") : null}</p>
           </div>
+          <div className="now-playing-duration">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? msToTime(currentlyPlaying.progress_ms) : "0:00"}</div>
           <div className="now-playing-progress"
           >
             <input
@@ -678,6 +693,7 @@ function App(props) {
             </input>
           </div>
           <div className="now-playing-volume">
+            <img className="volume-icon" src={volume}></img>
             <input
               className="now-playing-slider"
               style={{ background: Object.keys(activeDevice).length > 0 && activeDevice.volume_percent !== null ? `linear-gradient(90deg, rgb(0,128,128) ${activeDevice.volume_percent}%, rgb(255,255,255) ${activeDevice.volume_percent}%)` : "white", width: "70%" }}

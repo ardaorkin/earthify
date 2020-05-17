@@ -199,9 +199,9 @@ body {
   }
   
   div > .now-playing-progress {
-    background-color: white;
     height: 1px;
     grid-area: progress;
+    margin-bottom: 10px;
   }
 
   div > .now-playing-volume {
@@ -449,20 +449,29 @@ button {
   text-align: start;
   display: grid;
   grid-template-areas: 
-  'button info info'
-  'button progress progress'
-  'button volume rest';
-  grid-template-columns: 15% 45% 35%;
+  'image info info duration'
+  'button progress progress progress'
+  'button  volume turn turn';
+  grid-template-columns: 15% 35% 25% 25%;
   grid-template-rows: 30% 35% 35%;
+}
+
+.now-playing-image {
+  grid-area: image;
+  border-radius: 100%;
+  margin-top: 8px;
+  margin-left: 30px;
+  height: 35px;
+  width: 35px;
 }
 
 .now-playing-button {
   background-color: initial;
-  font-size: 50px;
+  font-size: 30px;
   margin: 0 auto;
-  margin-top: 27px;
   float: left;
   grid-area: button;
+  margin-top: 5px;
 }
 
 .now-playing-info {
@@ -500,6 +509,7 @@ button {
 .now-playing-slider {
   -webkit-appearance: none;
   height: 1px;
+  margin-left: 5px;
 }
 
 .now-playing-slider::-webkit-slider-thumb {
@@ -509,6 +519,19 @@ button {
   border-radius: 100%;
   background-color: teal;
   cursor: pointer;
+}
+
+.now-playing-duration {
+  color: white;
+  font-size: 15px;
+  display: flex;
+  align-items: flex-end;
+  margin-top: 45px;
+  margin-left: 30px;
+}
+
+.volume-icon {
+  margin-bottom: -7.5px;
 }
 
 /*App itself style*/
