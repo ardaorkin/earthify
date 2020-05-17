@@ -88,10 +88,12 @@ class Songs extends React.Component {
     render() {
         return (
             <>
-                {this.state.playlist != null ?
+                {this.state.playlist != null && this.state.playlist.items.length > 0 ?
                     this.state.playlist.items.map(el => {
+                        var artists_array = []
                         return <li key={el.track.id} onClick={() => this.handlePlaySong(el.track.uri)} className="songs-list">{el.track.name} - {el.track.artists.map(artist => {
-                            return artist.name
+                            artists_array.push(artist.name)
+                            return artists_array.join(", ")
                         })}</li>
                     })
                     : null}

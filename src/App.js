@@ -40,6 +40,8 @@ function App(props) {
   const [mapSource, setSource] = React.useState()
   const [activeDevice, setActiveDevice] = React.useState({})
 
+
+  var artists_array = []
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
   var ciCsB64 = "OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc="
@@ -676,7 +678,11 @@ function App(props) {
           <button className="now-playing-button" onClick={() => togglePausePlay()}>{currentlyPlaying.is_playing == true ? "ıı" : "►"}</button>
           <div className="now-playing-info">
             <p className="now-playing-track-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.name : null}</p>
-            <p className="now-playing-artist-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.artists.map(el => el.name + " ") : null}</p>
+            <p className="now-playing-artist-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.artists.map(el => {
+
+              artists_array.push(el.name)
+              return artists_array.join(", ")
+              }) : null}</p>
           </div>
           <div className="now-playing-duration">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? msToTime(currentlyPlaying.progress_ms) : "0:00"}</div>
           <div className="now-playing-progress"

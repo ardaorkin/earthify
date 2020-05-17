@@ -449,18 +449,17 @@ button {
   text-align: start;
   display: grid;
   grid-template-areas: 
-  'image info info duration'
-  'button progress progress progress'
-  'button  volume turn turn';
-  grid-template-columns: 15% 35% 25% 25%;
+  'image info button duration duration'
+  'image info button progress progress'
+  'image  info button volume turn';
+  grid-template-columns: 15% 25% 5% 25% 25%;
   grid-template-rows: 30% 35% 35%;
 }
 
 .now-playing-image {
   grid-area: image;
   border-radius: 100%;
-  margin-top: 8px;
-  margin-left: 30px;
+  margin: auto;
   height: 35px;
   width: 35px;
 }
@@ -471,7 +470,9 @@ button {
   margin: 0 auto;
   float: left;
   grid-area: button;
-  margin-top: 5px;
+  padding-right: 100%;
+  margin-top: 25px;
+  width: 20px;
 }
 
 .now-playing-info {
@@ -484,19 +485,21 @@ button {
 }
 
 .now-playing-track-name {
-  margin: 0 auto;
+  margin-top: inherit;
+  margin-bottom: auto;
+  margin-top: 10px;
   padding: 0;
 }
 
 .now-playing-artist-name {
-  margin: 3px auto 3px auto;
+  margin-top: auto;
+  margin-bottom: inherit;
   font-size: 15px;
   padding: 0;
 }
 
 .now-playing-progress {
   height: 1px;
-  margin-top: 10px;
   grid-area: progress;
   cursor: pointer;
 }
@@ -526,8 +529,8 @@ button {
   font-size: 15px;
   display: flex;
   align-items: flex-end;
-  margin-top: 45px;
-  margin-left: 30px;
+  padding-left: 100%;
+  margin-left: 70%;
 }
 
 .volume-icon {
