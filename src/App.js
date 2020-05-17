@@ -83,7 +83,7 @@ function App(props) {
 
     setInterval(() => {
       if (localStorage.getItem('logged_in')) {
-console.log("client_id: ", client_id)
+
         /*player division*/
         fetch(`https://api.spotify.com/v1/me/player`, {
           method: "GET",
