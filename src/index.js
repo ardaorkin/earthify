@@ -7,7 +7,7 @@ import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
-    {localStorage.getItem("access_token") == null ? <Intro /> : <App />}
+    {localStorage.getItem("logged_in") == undefined ? <Intro /> : <App />}
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -12,10 +12,12 @@ export default function Intro() {
 
     var handleLogin = () => {
         window.location = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scopes)}&show_dialog=true`
-    }
-
-    if (window.location.search.match(/\?code/g) !== null) {
-
+      }
+      
+      
+      
+      if (window.location.search.match(/\?code/g) !== null) {
+        localStorage.setItem('logged_in', true)
         fetch("https://accounts.spotify.com/api/token", {
           method: "POST",
           headers: {

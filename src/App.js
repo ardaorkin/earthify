@@ -36,6 +36,7 @@ function App(props) {
   const [currentlyPlaying, setCurrentlyPlaying] = React.useState({})
   const [showCurrentPlaying, setShowCurrentPlaying] = React.useState(false)
   const [mapSource, setSource] = React.useState()
+  const [activeDevice, setActiveDevice] = React.useState({})
 
   var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
   var client_secret = "907e432cd3d74554b29582eb58756277";
@@ -80,47 +81,96 @@ function App(props) {
     var layers = []
 
     setInterval(() => {
-      fetch(`https://api.spotify.com/v1/me/player`, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem('access_token')}`,
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        }
-      })
-        .then(res => {
-          if (res.status === 204) {
-            return res
-          } else if (res.status === 200) {
-            return res.json()
-          }
-        })
-        .then(result => {
-          if (result) {
+      if (localStorage.getItem('logged_in')) {
 
-            if (result.error) {
-              if (result.error.status === 401) {
-                fetch("https://accounts.spotify.com/api/token", {
-                  method: "POST",
-                  headers: {
-                    "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc=",
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Accept": "application/json"
-                  },
-                  body: `grant_type=refresh_token&refresh_token=${localStorage.getItem('refresh_token')}`
-                })
-                  .then(res => res.json())
-                  .then(result => {
-                    console.log("updating access token...")
-                    localStorage.setItem('access_token', result.access_token)
-                  })
-                  .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
-                  .then(() => window.location.reload())
-              }
-            }
-            setCurrentlyPlaying(result)
+        /*player division*/
+        fetch(`https://api.spotify.com/v1/me/player`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem('access_token')}`,
+            "Content-Type": "application/json",
+            "Accept": "application/json"
           }
         })
+          .then(res => {
+            if (res.status === 204) {
+              return res
+            } else if (res.status === 200) {
+              return res.json()
+            }
+          })
+          .then(result => {
+            if (result) {
+
+              if (result.error) {
+                if (result.error.status === 401) {
+                  fetch("https://accounts.spotify.com/api/token", {
+                    method: "POST",
+                    headers: {
+                      "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc=",
+                      "Content-Type": "application/x-www-form-urlencoded",
+                      "Accept": "application/json"
+                    },
+                    body: `grant_type=refresh_token&refresh_token=${localStorage.getItem('refresh_token')}`
+                  })
+                    .then(res => res.json())
+                    .then(result => {
+                      console.log("updating access token...")
+                      localStorage.setItem('access_token', result.access_token)
+                    })
+                    .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
+                    .then(() => window.location.reload())
+                }
+              }
+              setCurrentlyPlaying(result)
+              localStorage.setItem('current_position', result.progress_ms)
+            }
+          })
+        /*end of player dision*/
+
+        /*device info*/
+        fetch(`https://api.spotify.com/v1/me/player/devices`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem('access_token')}`
+          }
+        })
+          .then(res => {
+            if (res.status === 204) {
+              return res
+            } else if (res.status === 200) {
+              return res.json()
+            } else if (res.status === 401) {
+              fetch("https://accounts.spotify.com/api/token", {
+                method: "POST",
+                headers: {
+                  "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc=",
+                  "Content-Type": "application/x-www-form-urlencoded",
+                  "Accept": "application/json"
+                },
+                body: `grant_type=refresh_token&refresh_token=${localStorage.getItem('refresh_token')}`
+              })
+                .then(res => res.json())
+                .then(result => {
+                  console.log("updating access token...")
+                  localStorage.setItem('access_token', result.access_token)
+                })
+                .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
+                .then(() => window.location.reload())
+            }
+          })
+          .then(result => {
+            if (result) {
+              result.devices.map(device => {
+                if (device.is_active == true) {
+                  setActiveDevice(device)
+                }
+              })
+            }
+          })
+        /*end of device info */
+      }
+
     }, 1000)
 
     var map = new mapboxgl.Map({
@@ -159,8 +209,8 @@ function App(props) {
                 if (feature.place_type[0] === "country") {
                   console.log("map_results: ", feature)
 
-                  
-                  
+
+
                   if ("is source exist", map.getStyle().sources.hasOwnProperty(feature.id) === false) {
                     map.addSource(feature.id, {
                       "type": "geojson",
@@ -175,7 +225,7 @@ function App(props) {
                     layers.push(layer.id)
                   })
 
-                  
+
                   if (layers.indexOf(feature.text + "-layer") === -1) {
                     map.addLayer({
                       "id": feature.text + "-layer",
@@ -183,16 +233,16 @@ function App(props) {
                       "type": "circle",
                     })
                   }
-                  
+
                   map.setPaintProperty(feature.text + "-layer", 'circle-color', 'hsl(138, 100%, 40%)');
-                  
+
                   var defaultMapColor = map.getStyle().layers[0].paint["background-color"]
-                  
+
 
                   map.getStyle().layers.map(layer => {
-                    if(layer.type === "circle" && layer.id !== feature.text + "-layer") {
+                    if (layer.type === "circle" && layer.id !== feature.text + "-layer") {
                       map.setLayoutProperty(layer.id, "visibility", "none")
-                    }else if(layer.type === "circle" && layer.id == feature.text + "-layer") {
+                    } else if (layer.type === "circle" && layer.id == feature.text + "-layer") {
                       map.setLayoutProperty(layer.id, "visibility", "visible")
                     }
                   })
@@ -424,6 +474,8 @@ function App(props) {
             })
             .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
             .then(() => window.location.reload())
+        } else if (result.status === 404) {
+          alert('Please open Spotify App in your device')
         }
       })
   }
@@ -490,7 +542,7 @@ function App(props) {
             "Content-Type": "application/json",
             "Accept": "application/json"
           },
-          body: JSON.stringify({ uris: [currentlyPlaying.item.uri] })
+          body: JSON.stringify({ uris: [currentlyPlaying.item.uri], position_ms: localStorage.getItem('current_position') || 0 })
         })
           .then(res => res)
           .then(result => {
@@ -507,6 +559,45 @@ function App(props) {
     setShowCurrentPlaying(!showCurrentPlaying)
   }
 
+  var handleVolume = (e) => {
+    e.preventDefault()
+    console.log("volume_value: ", e.target.value)
+    fetch(`https://api.spotify.com/v1/me/player/volume?volume_percent=${e.target.value}`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem('access_token')}`
+      }
+    })
+      .then(res => {
+        if (res.status === 204) {
+          return res
+        } else {
+          return res.json()
+        }
+      })
+      .then(result => {
+        console.log("volume_result: ", result)
+      })
+  }
+
+
+  var handleSeekPosition = (e) => {
+    e.preventDefault()
+    if (Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null) {
+      var position = parseInt((e.target.value * currentlyPlaying.item.duration_ms) / 100)
+      localStorage.setItem('current_position', position)
+      console.log(e.target.value)
+      fetch(`https://api.spotify.com/v1/me/player/seek?position_ms=${position}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem('access_token')}`
+        }
+      })
+        .then(res => res)
+        .then(result => { console.log("seek_position_result: ", result) })
+    }
+  }
+
   return (
     <>
       <div className="settings" style={{ textAlign: openSettings ? "end" : "initial" }}>
@@ -518,7 +609,7 @@ function App(props) {
             </div>
             <div>
               <button className="map-style-button" onClick={() => handleStyleMap()}>{dark === "light" ? "Dark Mode" : "Light Mode"}</button>
-              <button className="toggle-player-button" onClick={() => toggleShowCurrentPlaying()}>{showCurrentPlaying === true ? "Hide Player" : "Show Player"}</button>
+              <button className="toggle-player-button" onClick={() => toggleShowCurrentPlaying()}>{showCurrentPlaying === true ? "Hide Controls" : "Show Controls"}</button>
             </div>
           </div>
           <div className="lists">
@@ -573,12 +664,27 @@ function App(props) {
             <p className="now-playing-track-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.name : null}</p>
             <p className="now-playing-artist-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.artists.map(el => el.name + " ") : null}</p>
           </div>
-          <div
-            className="now-playing-progress"
-            style={{ background: Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? `linear-gradient(90deg, rgb(0,128,128) ${(currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%"}, rgb(255,255,255) ${(currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%"})` : "white" }}>
-            <div style={{ maxWidth: "95%" }}>
-              <div className="now-playing-progress-ball" style={{ marginLeft: Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? (currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%" : "0%" }}></div>
-            </div>
+          <div className="now-playing-progress"
+          >
+            <input
+              className="now-playing-slider"
+              style={{ background: Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? `linear-gradient(90deg, rgb(0,128,128) ${(currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%"}, rgb(255,255,255) ${(currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) + "%"})` : "white", width: "90%" }}
+              type="range"
+              min="0" max="100"
+              step="0.01"
+              value={Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? (currentlyPlaying.progress_ms / currentlyPlaying.item.duration_ms * 100) : "0"}
+              onChange={(e) => handleSeekPosition(e)}
+            >
+            </input>
+          </div>
+          <div className="now-playing-volume">
+            <input
+              className="now-playing-slider"
+              style={{ background: Object.keys(activeDevice).length > 0 && activeDevice.volume_percent !== null ? `linear-gradient(90deg, rgb(0,128,128) ${activeDevice.volume_percent}%, rgb(255,255,255) ${activeDevice.volume_percent}%)` : "white", width: "70%" }}
+              type="range"
+              min="0" max="100"
+              value={activeDevice.volume_percent}
+              onChange={(e) => handleVolume(e)}></input>
           </div>
         </div>
         : null}
