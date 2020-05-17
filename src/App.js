@@ -55,7 +55,6 @@ function App(props) {
     fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
       headers: {
-        //"Authorization": "Basic " + ciCsB64,
         "Content-Type": "application/x-www-form-urlencoded",
         "Accept": "application/json"
       },
@@ -108,7 +107,7 @@ function App(props) {
                   fetch("https://accounts.spotify.com/api/token", {
                     method: "POST",
                     headers: {
-                      "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc=",
+                      "Authorization": `Basic ${ciCsB64}`,
                       "Content-Type": "application/x-www-form-urlencoded",
                       "Accept": "application/json"
                     },
@@ -145,7 +144,7 @@ function App(props) {
               fetch("https://accounts.spotify.com/api/token", {
                 method: "POST",
                 headers: {
-                  "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc=",
+                  "Authorization": `Basic ${ciCsB64}`,
                   "Content-Type": "application/x-www-form-urlencoded",
                   "Accept": "application/json"
                 },
@@ -409,7 +408,7 @@ function App(props) {
           fetch("https://accounts.spotify.com/api/token", {
             method: "POST",
             headers: {
-              "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc=",
+              "Authorization": `Basic ${ciCsB64}`,
               "Content-Type": "application/x-www-form-urlencoded",
               "Accept": "application/json"
             },
@@ -462,7 +461,7 @@ function App(props) {
           fetch("https://accounts.spotify.com/api/token", {
             method: "POST",
             headers: {
-              "Authorization": "Basic OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc=",
+              "Authorization": `Basic ${ciCsB64}`,
               "Content-Type": "application/x-www-form-urlencoded",
               "Accept": "application/json"
             },
