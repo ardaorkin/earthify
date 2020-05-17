@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/earthify/precache-manifest.cb8896e303557f925f33820d5ffc95d8.js"
+  "/earthify/precache-manifest.6be4b3650743308be23cb234e331ffaf.js"
 );
 
 self.addEventListener('message', (event) => {
