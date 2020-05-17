@@ -20,6 +20,7 @@ import magnifier from './magnifier.png'
 import settings from './settings.png'
 import volume from './volume.png'
 import mute from './mute.png'
+import {client_secret, client_id, ciCsB64} from './config/config'
 import Songs from './components/Songs'
 
 function App(props) {
@@ -40,11 +41,7 @@ function App(props) {
   const [mapSource, setSource] = React.useState()
   const [activeDevice, setActiveDevice] = React.useState({})
 
-
   var artists_array = []
-  var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
-  var client_secret = "907e432cd3d74554b29582eb58756277";
-  var ciCsB64 = "OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc="
   //var redirect_uri = "http://localhost:3000" + "/callback"
   var redirect_uri = window.location.origin + window.location.pathname
   var scopes = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
@@ -86,7 +83,7 @@ function App(props) {
 
     setInterval(() => {
       if (localStorage.getItem('logged_in')) {
-
+console.log("client_id: ", client_id)
         /*player division*/
         fetch(`https://api.spotify.com/v1/me/player`, {
           method: "GET",
