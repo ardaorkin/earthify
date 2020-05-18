@@ -22,7 +22,7 @@
 */
 
 import React, { useEffect } from 'react'
-import earthmusic from './earthmusic.png'
+import earthmusic from '../earthmusic.png'
 import {client_secret, client_id, mapbox_access_token, redirect_uri} from '../config/config'
 
 export default function Intro() {
