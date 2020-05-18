@@ -1,27 +1,20 @@
 import React, { useEffect } from 'react'
 import earthmusic from './earthmusic.png'
+import {client_secret, client_id, mapbox_access_token, redirect_uri} from './config/config'
 
 export default function Intro() {
 
-    var client_id = "9e71a4da3ee24d31ab4fd842607cce9e";
-    var client_secret = "907e432cd3d74554b29582eb58756277";
-    var ciCsB64 = "OWU3MWE0ZGEzZWUyNGQzMWFiNGZkODQyNjA3Y2NlOWU6OTA3ZTQzMmNkM2Q3NDU1NGIyOTU4MmViNTg3NTYyNzc="
-    // var redirect_uri = "http://localhost:3000/callback"
-    var redirect_uri = window.location.origin + window.location.pathname
     var scopes = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
 
     var handleLogin = () => {
         window.location = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scopes)}&show_dialog=true`
       }
       
-      
-      
       if (window.location.search.match(/\?code/g) !== null) {
         localStorage.setItem('logged_in', true)
         fetch("https://accounts.spotify.com/api/token", {
           method: "POST",
           headers: {
-            //"Authorization": "Basic " + ciCsB64,
             "Content-Type": "application/x-www-form-urlencoded",
             "Accept": "application/json"
           },
