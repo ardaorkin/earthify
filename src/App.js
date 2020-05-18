@@ -20,7 +20,7 @@ import magnifier from './magnifier.png'
 import settings from './settings.png'
 import volume from './volume.png'
 import mute from './mute.png'
-import {client_secret, client_id, ciCsB64} from './config/config'
+import {client_secret, client_id, mapbox_access_token, redirect_uri} from './config/config'
 import Songs from './components/Songs'
 
 function App(props) {
@@ -42,13 +42,9 @@ function App(props) {
   const [activeDevice, setActiveDevice] = React.useState({})
 
   var artists_array = []
-  //var redirect_uri = "http://localhost:3000" + "/callback"
-  var redirect_uri = window.location.origin + window.location.pathname
   var scopes = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
-
   var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
-
-  mapboxgl.accessToken = 'pk.eyJ1IjoiYXJkYW9ya2luIiwiYSI6ImNrOW9teW8wMzAyNnczbHJ0emVvNHE5dXcifQ.J_P9VwfH6UeYpgG5gw-JJQ';
+  mapboxgl.accessToken = mapbox_access_token;
 
   if (window.location.search.match(/\?code/g) !== null) {
 
@@ -107,11 +103,10 @@ function App(props) {
                   fetch("https://accounts.spotify.com/api/token", {
                     method: "POST",
                     headers: {
-                      "Authorization": `Basic ${ciCsB64}`,
                       "Content-Type": "application/x-www-form-urlencoded",
                       "Accept": "application/json"
                     },
-                    body: `grant_type=refresh_token&refresh_token=${localStorage.getItem('refresh_token')}`
+                    body: `grant_type=refresh_token&refresh_token=${localStorage.getItem('refresh_token')}&client_id=${client_id}&client_secret=${client_secret}`
                   })
                     .then(res => res.json())
                     .then(result => {
@@ -144,11 +139,10 @@ function App(props) {
               fetch("https://accounts.spotify.com/api/token", {
                 method: "POST",
                 headers: {
-                  "Authorization": `Basic ${ciCsB64}`,
                   "Content-Type": "application/x-www-form-urlencoded",
                   "Accept": "application/json"
                 },
-                body: `grant_type=refresh_token&refresh_token=${localStorage.getItem('refresh_token')}`
+                body: `grant_type=refresh_token&refresh_token=${localStorage.getItem('refresh_token')}&client_id=${client_id}&client_secret=${client_secret}`
               })
                 .then(res => res.json())
                 .then(result => {
@@ -408,11 +402,10 @@ function App(props) {
           fetch("https://accounts.spotify.com/api/token", {
             method: "POST",
             headers: {
-              "Authorization": `Basic ${ciCsB64}`,
               "Content-Type": "application/x-www-form-urlencoded",
               "Accept": "application/json"
             },
-            body: `grant_type=refresh_token&refresh_token=${refresh}`
+            body: `grant_type=refresh_token&refresh_token=${refresh}&client_id=${client_id}&client_secret=${client_secret}`
           })
             .then(res => res.json())
             .then(result => {
@@ -461,11 +454,10 @@ function App(props) {
           fetch("https://accounts.spotify.com/api/token", {
             method: "POST",
             headers: {
-              "Authorization": `Basic ${ciCsB64}`,
               "Content-Type": "application/x-www-form-urlencoded",
               "Accept": "application/json"
             },
-            body: `grant_type=refresh_token&refresh_token=${refresh}`
+            body: `grant_type=refresh_token&refresh_token=${refresh}&client_id=${client_id}&client_secret=${client_secret}`
           })
             .then(res => res.json())
             .then(result => {
