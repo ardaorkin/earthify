@@ -22,11 +22,17 @@
 */
 import React from 'react';
 import './App.css';
-import magnifier from './magnifier.png'
-import settings from './settings.png'
-import volume from './volume.png'
-import mute from './mute.png'
-import {client_secret, client_id, mapbox_access_token, redirect_uri} from './config/config'
+import magnifier from './icons/magnifier.png'
+import settings from './icons/settings.png'
+import like from './icons/like.png'
+import unlike from './icons/unlike.png'
+import volume from './icons/volume.png'
+import mute from './icons/mute.png'
+import play from './icons/play.png'
+import pause from './icons/pause.png'
+import previous from './icons/previous.png'
+import forward from './icons/forward.png'
+import { client_secret, client_id, mapbox_access_token, redirect_uri } from './config/config'
 import Songs from './components/Songs'
 
 function App(props) {
@@ -46,9 +52,10 @@ function App(props) {
   const [showCurrentPlaying, setShowCurrentPlaying] = React.useState(false)
   const [mapSource, setSource] = React.useState()
   const [activeDevice, setActiveDevice] = React.useState({})
+  const [isSaved, setSaved] = React.useState(false)
 
   var artists_array = []
-  var scopes = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
+  var scopes = 'user-library-read user-library-modify user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
   var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
   mapboxgl.accessToken = mapbox_access_token;
 
@@ -122,11 +129,32 @@ function App(props) {
                     .then(() => console.log("acess token were refresh\nnew access token: ", localStorage.getItem('access_token')))
                     .then(() => window.location.reload())
                 }
+              } else {
+                if (result.item) {
+                  fetch(`https://api.spotify.com/v1/me/tracks/contains?ids=${result.item.id}`, {
+                    method: "GET",
+                    headers: {
+                      "Authorization": `Bearer ${localStorage.getItem('access_token')}`
+                    }
+                  })
+                    .then(res => {
+                      if (res.status == 200) {
+                        return res.json()
+                      } else {
+                        return res
+                      }
+                    })
+                    .then(result => {
+                      setSaved(result[0])
+                    })
+                }
               }
-              setCurrentlyPlaying(result)
-              localStorage.setItem('current_position', result.progress_ms)
             }
+            setCurrentlyPlaying(result)
+            localStorage.setItem('current_position', result.progress_ms)
           })
+
+
         /*end of player dision*/
 
         /*device info*/
@@ -540,7 +568,7 @@ function App(props) {
             "Content-Type": "application/json",
             "Accept": "application/json"
           },
-          body: JSON.stringify({ uris: [currentlyPlaying.item.uri], position_ms: localStorage.getItem('current_position') || 0 })
+          body: JSON.stringify({ context_uri: currentlyPlaying.context.uri, offset: { uri: currentlyPlaying.item.uri }, position_ms: localStorage.getItem('current_position') || 0 })
         })
           .then(res => res)
           .then(result => {
@@ -597,14 +625,64 @@ function App(props) {
   }
 
   var msToTime = (duration) => {
-    var seconds = parseInt((duration/1000)%60)
-    var minutes = parseInt((duration/(1000*60))%60)
+    var seconds = parseInt((duration / 1000) % 60)
+    var minutes = parseInt((duration / (1000 * 60)) % 60)
 
     minutes = (minutes < 10) ? "0" + minutes : minutes;
     seconds = (seconds < 10) ? "0" + seconds : seconds;
 
     return minutes + ":" + seconds;
-}
+  }
+
+
+  var handlePrevious = () => {
+    fetch('https://api.spotify.com/v1/me/player/previous', {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem('access_token')}`
+      }
+    })
+      .then(res => res)
+      .then(result => console.log("play_previous_result", result))
+  }
+
+  var handleForward = () => {
+    fetch('https://api.spotify.com/v1/me/player/next', {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem('access_token')}`
+      }
+    })
+      .then(res => res)
+      .then(result => console.log("play_forward_result", result))
+  }
+
+  var toggleLike = () => {
+    if (Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== undefined) {
+      if (isSaved == true) {
+        fetch(`https://api.spotify.com/v1/me/tracks?ids=${currentlyPlaying.item.id}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem('access_token')}`,
+            "Content-Type": "application/json"
+          }
+        })
+          .then(res => res)
+          .then(result => console.log("unlike_track_result: ", result))
+      } else if (isSaved == false) {
+        fetch(`https://api.spotify.com/v1/me/tracks?ids=${currentlyPlaying.item.id}`, {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem('access_token')}`,
+            "Content-Type": "application/json"
+          }
+        })
+          .then(res => res)
+          .then(result => console.log("like_track_result: ", result))
+      }
+    }
+  }
+
 
   return (
     <>
@@ -669,14 +747,14 @@ function App(props) {
         <div className="now-playing">
           <img className="now-playing-image" src={Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item ? currentlyPlaying.item.album.images[currentlyPlaying.item.album.images.length - 1].url : null} alt="album-image"></img>
 
-          <button className="now-playing-button" onClick={() => togglePausePlay()}>{currentlyPlaying.is_playing == true ? "ıı" : "►"}</button>
+          <img className="now-playing-like" onClick={() => toggleLike()} src={isSaved == true ? unlike : like} alt="is-liked"></img>
           <div className="now-playing-info">
             <p className="now-playing-track-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.name : null}</p>
             <p className="now-playing-artist-name">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? currentlyPlaying.item.artists.map(el => {
 
               artists_array.push(el.name)
               return artists_array.join(", ")
-              }) : null}</p>
+            }) : null}</p>
           </div>
           <div className="now-playing-duration">{Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item !== null ? msToTime(currentlyPlaying.progress_ms) : "0:00"}</div>
           <div className="now-playing-progress"
@@ -701,6 +779,11 @@ function App(props) {
               min="0" max="100"
               value={activeDevice.volume_percent}
               onChange={(e) => handleVolume(e)}></input>
+          </div>
+          <div className="now-playing-turn">
+            <button className="now-playing-turn-prev" onClick={() => handlePrevious()}><img src={previous} alt="previous"></img></button>
+            <button className="now-playing-turn-play" onClick={() => togglePausePlay()}>{currentlyPlaying.is_playing == true ? <img src={pause} alt="pause"></img> : <img src={play} alt="play"></img>}</button>
+            <button className="now-playing-turn-forw" onClick={() => handleForward()}><img src={forward} alt="forward"></img></button>
           </div>
         </div>
         : null}

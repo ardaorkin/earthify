@@ -22,12 +22,12 @@
 */
 
 import React, { useEffect } from 'react'
-import earthmusic from '../earthmusic.png'
+import earthmusic from '../icons/earthmusic.png'
 import {client_secret, client_id, mapbox_access_token, redirect_uri} from '../config/config'
 
 export default function Intro() {
 
-    var scopes = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
+    var scopes = 'user-library-read user-library-modify user-read-private user-read-email user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private';
 
     var handleLogin = () => {
         window.location = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scopes)}&show_dialog=true`
