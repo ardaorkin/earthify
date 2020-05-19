@@ -1,25 +1,25 @@
 {
   "files": {
     "main.css": "/earthify/static/css/main.5d0d0c7f.chunk.css",
-    "main.js": "/earthify/static/js/main.b978efb3.chunk.js",
-    "main.js.map": "/earthify/static/js/main.b978efb3.chunk.js.map",
+    "main.js": "/earthify/static/js/main.38fbe6ae.chunk.js",
+    "main.js.map": "/earthify/static/js/main.38fbe6ae.chunk.js.map",
     "runtime-main.js": "/earthify/static/js/runtime-main.b3e3a8ea.js",
     "runtime-main.js.map": "/earthify/static/js/runtime-main.b3e3a8ea.js.map",
-    "static/js/2.4a8c35e3.chunk.js": "/earthify/static/js/2.4a8c35e3.chunk.js",
-    "static/js/2.4a8c35e3.chunk.js.map": "/earthify/static/js/2.4a8c35e3.chunk.js.map",
+    "static/js/2.fce096d4.chunk.js": "/earthify/static/js/2.fce096d4.chunk.js",
+    "static/js/2.fce096d4.chunk.js.map": "/earthify/static/js/2.fce096d4.chunk.js.map",
     "index.html": "/earthify/index.html",
-    "precache-manifest.16a7f7df38ed01e3557ad893b1195a9f.js": "/earthify/precache-manifest.16a7f7df38ed01e3557ad893b1195a9f.js",
+    "precache-manifest.aaf101db1eb66db900e66bda12964d69.js": "/earthify/precache-manifest.aaf101db1eb66db900e66bda12964d69.js",
     "service-worker.js": "/earthify/service-worker.js",
     "static/css/main.5d0d0c7f.chunk.css.map": "/earthify/static/css/main.5d0d0c7f.chunk.css.map",
-    "static/js/2.4a8c35e3.chunk.js.LICENSE.txt": "/earthify/static/js/2.4a8c35e3.chunk.js.LICENSE.txt",
+    "static/js/2.fce096d4.chunk.js.LICENSE.txt": "/earthify/static/js/2.fce096d4.chunk.js.LICENSE.txt",
     "static/media/earthmusic.png": "/earthify/static/media/earthmusic.21749bcf.png",
     "static/media/magnifier.png": "/earthify/static/media/magnifier.5792a2ef.png",
     "static/media/Responsive.css": "/earthify/static/media/settings.39b8785e.png"
   },
   "entrypoints": [
     "static/js/runtime-main.b3e3a8ea.js",
-    "static/js/2.4a8c35e3.chunk.js",
+    "static/js/2.fce096d4.chunk.js",
     "static/css/main.5d0d0c7f.chunk.css",
-    "static/js/main.b978efb3.chunk.js"
+    "static/js/main.38fbe6ae.chunk.js"
   ]
 }
