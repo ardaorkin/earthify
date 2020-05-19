@@ -21,7 +21,8 @@
  https://github.com/ardaorkin
 */
 import React from 'react';
-import './App.css';
+import './css/App.css';
+import './css/Responsive.css'
 import magnifier from './icons/magnifier.png'
 import like from './icons/like.png'
 import unlike from './icons/unlike.png'
