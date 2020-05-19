@@ -151,6 +151,7 @@ function App(props) {
               }
             }
             setCurrentlyPlaying(result)
+            localStorage.setItem('currently_playing', JSON.stringify(result))
             localStorage.setItem('current_position', result.progress_ms)
           })
 

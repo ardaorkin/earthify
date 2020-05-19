@@ -70,6 +70,7 @@ class Songs extends React.Component {
     }
 
     handlePlaySong = (e) => {
+
         fetch(`https://api.spotify.com/v1/me/player/play`, {
             method: "PUT",
             headers: {
@@ -77,7 +78,7 @@ class Songs extends React.Component {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             },
-            body: JSON.stringify({ uris: [e] })
+            body: JSON.stringify({ context_uri: JSON.parse(localStorage.getItem('currently_playing')).context.uri, offset: { uri: e } })
         })
             .then(res => res)
             .then(result => {
