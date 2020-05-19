@@ -713,7 +713,7 @@ function App(props) {
                         </div>
                         <button
                           className="songs-button"
-                          onClick={() => handleSongs(playlist.id)}>{showSongs === playlist.id ? "▼" : "►"}</button>
+                          onClick={() => handleSongs(playlist)}>{showSongs === playlist.id ? "▼" : "►"}</button>
                       </li>
                       {showSongs === playlist.id ? songsComponent : null}
                     </>
