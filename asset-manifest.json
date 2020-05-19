@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/earthify/static/css/main.794bf9b0.chunk.css",
-    "main.js": "/earthify/static/js/main.9f264b5c.chunk.js",
-    "main.js.map": "/earthify/static/js/main.9f264b5c.chunk.js.map",
+    "main.js": "/earthify/static/js/main.c34e53e0.chunk.js",
+    "main.js.map": "/earthify/static/js/main.c34e53e0.chunk.js.map",
     "runtime-main.js": "/earthify/static/js/runtime-main.b3e3a8ea.js",
     "runtime-main.js.map": "/earthify/static/js/runtime-main.b3e3a8ea.js.map",
     "static/js/2.4a8c35e3.chunk.js": "/earthify/static/js/2.4a8c35e3.chunk.js",
     "static/js/2.4a8c35e3.chunk.js.map": "/earthify/static/js/2.4a8c35e3.chunk.js.map",
     "index.html": "/earthify/index.html",
-    "precache-manifest.b2edc96196c30205ebf6dfaa5dcb10f9.js": "/earthify/precache-manifest.b2edc96196c30205ebf6dfaa5dcb10f9.js",
+    "precache-manifest.5c54fb8787d9d8e4b76b04cead3729eb.js": "/earthify/precache-manifest.5c54fb8787d9d8e4b76b04cead3729eb.js",
     "service-worker.js": "/earthify/service-worker.js",
     "static/css/main.794bf9b0.chunk.css.map": "/earthify/static/css/main.794bf9b0.chunk.css.map",
     "static/js/2.4a8c35e3.chunk.js.LICENSE.txt": "/earthify/static/js/2.4a8c35e3.chunk.js.LICENSE.txt",
@@ -20,6 +20,6 @@
     "static/js/runtime-main.b3e3a8ea.js",
     "static/js/2.4a8c35e3.chunk.js",
     "static/css/main.794bf9b0.chunk.css",
-    "static/js/main.9f264b5c.chunk.js"
+    "static/js/main.c34e53e0.chunk.js"
   ]
 }
