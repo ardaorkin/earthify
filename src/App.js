@@ -23,6 +23,7 @@
 import React from 'react';
 import './css/App.css';
 import './css/Responsive.css'
+import earthmusic from './icons/earthmusic.png'
 import magnifier from './icons/magnifier.png'
 import like from './icons/like.png'
 import unlike from './icons/unlike.png'
@@ -748,7 +749,7 @@ function App(props) {
       </div>
       {showCurrentPlaying === true ?
         <div className="now-playing">
-          <img className="now-playing-image" src={Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item ? currentlyPlaying.item.album.images[currentlyPlaying.item.album.images.length - 1].url : null} alt="album-image"></img>
+          <img className="now-playing-image" src={Object.keys(currentlyPlaying).length > 0 && currentlyPlaying.item ? currentlyPlaying.item.album.images[currentlyPlaying.item.album.images.length - 1].url : earthmusic} alt="album-image"></img>
 
           <img className="now-playing-like" onClick={() => toggleLike()} src={isSaved == true ? unlike : like} alt="is-liked"></img>
           <div className="now-playing-info">
