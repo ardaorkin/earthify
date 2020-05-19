@@ -23,7 +23,6 @@
 import React from 'react';
 import './App.css';
 import magnifier from './icons/magnifier.png'
-import settings from './icons/settings.png'
 import like from './icons/like.png'
 import unlike from './icons/unlike.png'
 import volume from './icons/volume.png'
@@ -38,6 +37,7 @@ import Songs from './components/Songs'
 function App(props) {
   const mapStyle = localStorage.getItem("map_style") || "light"
   const access_token = localStorage.getItem('access_token') || ""
+  const show_currently_playing = localStorage.getItem('show_currently_playing') || false
   const [accessToken, setToken] = React.useState(access_token)
   const [auth, setAuth] = React.useState(window.localStorage.getItem('auth'))
   const [refresh, setRefresh] = React.useState(localStorage.getItem('refresh_token'))
@@ -49,8 +49,7 @@ function App(props) {
   const [songsComponent, setSongsComponent] = React.useState()
   const [showSongs, setShowSongs] = React.useState(null)
   const [currentlyPlaying, setCurrentlyPlaying] = React.useState({})
-  const [showCurrentPlaying, setShowCurrentPlaying] = React.useState(false)
-  const [mapSource, setSource] = React.useState()
+  const [showCurrentPlaying, setShowCurrentPlaying] = React.useState(JSON.parse(show_currently_playing))
   const [activeDevice, setActiveDevice] = React.useState({})
   const [isSaved, setSaved] = React.useState(false)
 
@@ -273,6 +272,7 @@ function App(props) {
                       map.setLayoutProperty(layer.id, "visibility", "visible")
                     }
                   })
+
 
 
                   console.log("current_map_style: ", map.getStyle())
@@ -584,6 +584,7 @@ function App(props) {
 
   var toggleShowCurrentPlaying = (e) => {
     setShowCurrentPlaying(!showCurrentPlaying)
+    localStorage.setItem('show_currently_playing', !showCurrentPlaying)
   }
 
   var handleVolume = (e) => {
@@ -778,7 +779,7 @@ function App(props) {
               style={{ background: Object.keys(activeDevice).length > 0 && activeDevice.volume_percent !== null ? `linear-gradient(90deg, rgb(0,128,128) ${activeDevice.volume_percent}%, rgb(255,255,255) ${activeDevice.volume_percent}%)` : "white", width: "70%" }}
               type="range"
               min="0" max="100"
-              value={activeDevice.volume_percent}
+              value={activeDevice.volume_percent || "0"}
               onChange={(e) => handleVolume(e)}></input>
           </div>
           <div className="now-playing-turn">
