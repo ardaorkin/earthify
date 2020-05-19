@@ -1,7 +1,8 @@
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 1000px) {
     div>.settings {
       width: 40%;
       text-align: end;
+      display: block;
     }
     div>.settings-content {
       min-height: 100%;
