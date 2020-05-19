@@ -78,7 +78,7 @@ class Songs extends React.Component {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             },
-            body: JSON.stringify({ context_uri: JSON.parse(localStorage.getItem('currently_playing')).context.uri, offset: { uri: e } })
+            body: JSON.stringify({ context_uri: JSON.parse(localStorage.getItem('listed_playlist')).uri, offset: { uri: e } })
         })
             .then(res => res)
             .then(result => {

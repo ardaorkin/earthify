@@ -151,7 +151,6 @@ function App(props) {
               }
             }
             setCurrentlyPlaying(result)
-            localStorage.setItem('currently_playing', JSON.stringify(result))
             localStorage.setItem('current_position', result.progress_ms)
           })
 
@@ -265,7 +264,6 @@ function App(props) {
 
                   map.setPaintProperty(feature.text + "-layer", 'circle-color', 'hsl(138, 100%, 40%)');
 
-                  var defaultMapColor = map.getStyle().layers[0].paint["background-color"]
 
 
                   map.getStyle().layers.map(layer => {
@@ -540,12 +538,14 @@ function App(props) {
 
 
   var handleSongs = (e) => {
-    if (showSongs === e) {
+    localStorage.setItem('listed_playlist', JSON.stringify(e))
+    console.log('listed_playlist: ', e)
+    if (showSongs === e.id) {
       setShowSongs(null)
     } else {
-      var songsComponent = <><Songs playlist_id={e} /></>
+      var songsComponent = <><Songs playlist_id={e.id} /></>
       setSongsComponent(songsComponent)
-      setShowSongs(e)
+      setShowSongs(e.id)
     }
   }
 
@@ -729,7 +729,7 @@ function App(props) {
                         </div>
                         <button
                           className="songs-button"
-                          onClick={() => handleSongs(playlist.id)}>{showSongs === playlist.id ? "▼" : "►"}</button>
+                          onClick={() => handleSongs(playlist)}>{showSongs === playlist.id ? "▼" : "►"}</button>
                       </li>
                       {showSongs === playlist.id ? songsComponent : null}
                     </>
@@ -793,4 +793,3 @@ function App(props) {
 }
 
 export default App;
-
