@@ -36,19 +36,19 @@ vim src/config/config.js
 
 ## Illustrations
 
-![Intro](./public/images/intro.png =700x)
-![Opening](./public/images/opening.png =700x)
-![Light mode one](./public/images/light-one.png =700x)
-![Dark mode one](./public/images/dark-one.png =700x)
-![Dark mode two](./public/images/dark-two.png =700x)
-![Dark mode three](./public/images/dark-three.png =700x)
-![Playlist one](./public/images/playlist-one.png =700x)
-![Playlist two](./public/images/playlist-two.png =700x)
-![Playlist three](./public/images/playlist-three.png =700x)
+<img src="/public/images/intro.png" width="700" />
+<img src="/public/images/light-one.png" width="700" />
+<img src="/public/images/dark-one.png" width="700" />
+<img src="/public/images/dark-two.png" width="700" />
+<img src="/public/images/dark-three.png" width="700" />
+<img src="/public/images/playlist-one.png" width="700" />
+<img src="/public/images/playlist-two.png" width="700" />
+<img src="/public/images/playlist-three.png" width="700" />
 
 ### Responsive
-![Responsive light one](./public/images/responsive-light.jpeg =200x)
-![Responsive dark one](./public/images/responsive-dark-one.jpeg =200x)
-![Responsive playlist one](./public/images/responsive-playlist-one.jpeg =200x)
-![Responsive playlist two](./public/images/responsive-playlist-two.jpeg =200x)
-![Responsive playlist three](./public/images/responsive-playlist-three.jpeg =200x)
+
+<img src="/public/images/responsive-light.jpeg" width="200" />
+<img src="/public/images/responsive-dark-one.jpeg" width="200" />
+<img src="/public/images/responsive-playlist-one.jpeg" width="200" />
+<img src="/public/images/responsive-playlist-two.jpeg" width="200" />
+<img src="/public/images/responsive-playlist-three.jpeg" width="200" />
