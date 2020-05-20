@@ -191,6 +191,7 @@ ul .li-text::before {
 
 button {
   background-color: rgb(56, 56, 56);
+  outline: none;
   color: white;
   margin-top: 10px;
   margin-left: 30%;
@@ -201,6 +202,7 @@ button {
   text-decoration: none;
   border: 0;
 }
+
 
 .map-style-button {
   width: 150px;

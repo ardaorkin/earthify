@@ -41,6 +41,7 @@
     }
     div>button {
       background-color: rgb(56, 56, 56);
+      outline: none;
       color: white;
       margin-top: 10px;
       margin-left: 16%;
