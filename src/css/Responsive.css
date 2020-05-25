@@ -215,6 +215,11 @@
       background-color: teal;
       cursor: pointer;
     }
+
+    div > #volume::-webkit-slider-thumb {
+      width: 15px;
+      height: 15px;
+    }
     
     div > .now-playing-turn {
       float: left;

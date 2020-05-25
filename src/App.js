@@ -777,6 +777,7 @@ function App(props) {
           <div className="now-playing-volume">
             <img className="volume-icon" src={volume}></img>
             <input
+              id="volume"
               className="now-playing-slider"
               style={{ background: Object.keys(activeDevice).length > 0 && activeDevice.volume_percent !== null ? `linear-gradient(90deg, rgb(0,128,128) ${activeDevice.volume_percent}%, rgb(255,255,255) ${activeDevice.volume_percent}%)` : "white", width: "70%" }}
               type="range"

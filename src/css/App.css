@@ -340,6 +340,7 @@ button {
   -webkit-appearance: none;
   height: 1px;
   margin-left: 5px;
+  outline: none;
 }
 
 .now-playing-slider::-webkit-slider-thumb {
@@ -349,6 +350,11 @@ button {
   border-radius: 100%;
   background-color: teal;
   cursor: pointer;
+}
+
+#volume::-webkit-slider-thumb {
+  width: 15px;
+  height: 15px;
 }
 
 .now-playing-duration {
