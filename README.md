@@ -1,4 +1,4 @@
-# Earthify - music app
+# Earthify - Let's Listen The Earth!
 A music app created with ReactJS, Spotify API and Mapbox
 
 ## Table of contents
