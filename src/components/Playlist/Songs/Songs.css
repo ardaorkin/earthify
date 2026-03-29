@@ -1,0 +1,2 @@
+.songs-list { list-style: none; padding: 6px 0 6px 20px; cursor: pointer; font-size: 0.9em; color: #333; }
+.songs-list:hover { background: rgba(0,128,128,0.1); }

@@ -1,0 +1,4 @@
+.search-form { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.search-input { padding: 8px; border-radius: 4px; border: none; }
+.search-button { cursor: pointer; }
+.search-button .icon { width: 20px; height: 20px; }

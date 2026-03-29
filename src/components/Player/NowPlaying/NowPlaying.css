@@ -1,0 +1,1 @@
+.now-playing { position: fixed; bottom: 0; left: 0; right: 0; display: flex; align-items: center; background: rgb(0,128,128); padding: 10px 20px; gap: 15px; z-index: 1000; }

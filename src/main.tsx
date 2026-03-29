@@ -6,7 +6,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './css/index.css'
 import App from './App'
-import Intro from './components/Intro'
+import { Intro } from './components/Intro'
 
 const isLoggedIn = localStorage.getItem('logged_in') !== null
 

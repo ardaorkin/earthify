@@ -1,0 +1,2 @@
+.mode-toggle { display: flex; gap: 8px; margin-bottom: 10px; }
+.map-style-button, .toggle-player-button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; background: rgb(0,128,128); color: white; }

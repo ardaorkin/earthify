@@ -1,0 +1,4 @@
+.playlist-list { list-style: none; padding: 8px 0; border-bottom: 1px solid rgba(0,128,128,0.2); }
+.li-text { cursor: pointer; color: rgb(0,128,128); font-weight: 500; }
+.li-text:hover { text-decoration: underline; }
+.songs-button { background: none; border: none; cursor: pointer; color: rgb(0,128,128); font-size: 0.9em; margin-left: 10px; }

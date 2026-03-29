@@ -1,0 +1,4 @@
+.now-playing-turn { display: flex; gap: 10px; }
+.now-playing-turn button { background: none; border: none; cursor: pointer; padding: 5px; }
+.now-playing-turn button img { width: 24px; height: 24px; }
+.now-playing-turn-play img { width: 32px; height: 32px; }

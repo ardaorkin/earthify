@@ -17,7 +17,7 @@ import pause from './icons/pause.png'
 import previous from './icons/previous.png'
 import forward from './icons/forward.png'
 import { client_secret, client_id, mapbox_access_token, redirect_uri } from './config/config'
-import Songs from './components/Songs'
+import { Songs } from './components/Playlist'
 
 mapboxgl.accessToken = mapbox_access_token
 
@@ -202,7 +202,7 @@ function App() {
   const handleSongs = (playlist) => {
     localStorage.setItem('listed_playlist', JSON.stringify(playlist))
     if (showSongs === playlist.id) setShowSongs(null)
-    else { setSongsComponent(<Songs playlist_id={playlist.id} />); setShowSongs(playlist.id) }
+    else { setSongsComponent(<Songs playlistId={playlist.id} />); setShowSongs(playlist.id) }
   }
 
   const togglePausePlay = () => {
